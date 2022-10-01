@@ -1,0 +1,5 @@
+{
+  "ignore": [".git", "node_modules", ".next", "src"],
+  "exec": "ts-node -r tsconfig-paths/register index.ts",
+  "ext": "js,ts,json"
+}

@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: server
+  template:
+    metadata:
+      labels:
+        component: server
+    spec:
+      containers:
+        - name: server
+          image: loserforever/chatssy-server-dev
+          ports:
+            - containerPort: 3000
+          env:
+            - name: COOKIE_SECRET
+              value: "e511eeff9e8f4d5af2ebadf3ba443e624c384519992614cac941d2751a78184628971f8d82fe681279189976df964fa"
+            - name: CSRF_TOKEN_SECRET
+              value: "1d6fd8ff94cc58f6046878c120a188009dd1facf7300cbea76da367f5fd549a0485c9cc6316e1c8317aa2ae36aafcaec"
+            - name: MONGO_URI
+              value: "mongodb+srv://admin:anchuoicanai@chatssy.lgekg.mongodb.net/?retryWrites=true&w=majority"
+            - name: REDIS_HOST
+              value: redis-cluster-ip-service
+            - name: REDIS_PORT
+              value: "6379"
+            - name: REDIS_CACHE_TTL
+              value: "100"
+            - name: PASSWORD_SALT_ROUNDS
+              value: "12"

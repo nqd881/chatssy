@@ -1,0 +1,77 @@
+import { EjsTemplateService } from '@modules/extra/ejs_template';
+import { Inject, Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { isString } from 'class-validator';
+import { Data } from 'ejs';
+import { OAuth2Client } from 'google-auth-library';
+import * as nodemailer from 'nodemailer';
+import { MailOptions } from 'nodemailer/lib/json-transport';
+import { Env } from 'src/env/types';
+import { ChatssyEmail } from './chatssyEmail';
+import {
+  GOOGLE_MAILER_CLIENT,
+  InternalTemplateConstructor,
+  TemplateSender,
+} from './types';
+
+@Injectable()
+export class EmailService {
+  @Inject()
+  private ejsTemplateService: EjsTemplateService;
+
+  @Inject(GOOGLE_MAILER_CLIENT)
+  private mailerClient: OAuth2Client;
+
+  @Inject()
+  private envConfig: ConfigService;
+
+  get transporter() {
+    return nodemailer.createTransport({
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true,
+      auth: {
+        type: 'OAuth2',
+        user: this.envConfig.get(Env.GOOGLE_ADMIN_EMAIL_ADDRESS),
+        clientId: this.envConfig.get(Env.GOOGLE_CLIENT_ID),
+        clientSecret: this.envConfig.get(Env.GOOGLE_CLIENT_SECRET),
+        refreshToken: this.envConfig.get(Env.GOOGLE_MAILER_REFRESH_TOKEN),
+      },
+    });
+  }
+
+  async sendEmail(options: MailOptions) {
+    return this.transporter.sendMail(options);
+  }
+
+  resolveTemplateName<T>(
+    templateClassOrName: InternalTemplateConstructor<T> | string,
+  ) {
+    return isString(templateClassOrName)
+      ? templateClassOrName
+      : templateClassOrName.name;
+  }
+
+  buildTemplateSender<T = Data>(
+    templateClassOrName: InternalTemplateConstructor<T> | string,
+  ): TemplateSender<T> {
+    return async (data: T, options: MailOptions) => {
+      const templateName = this.resolveTemplateName(templateClassOrName);
+      const templateFn = await this.ejsTemplateService.get(templateName);
+
+      return this.sendEmail({
+        ...options,
+        html: templateFn(data),
+      });
+    };
+  }
+
+  send<D = any>(email: ChatssyEmail<D>) {
+    if (email.template) {
+      const sender = this.buildTemplateSender(email.template);
+      return sender(email.data, email.options);
+    }
+
+    return this.sendEmail(email.options);
+  }
+}

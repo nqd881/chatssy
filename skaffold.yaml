@@ -1,0 +1,29 @@
+apiVersion: skaffold/v2beta29
+kind: Config
+metadata:
+  name: chatssy
+build:
+  local:
+    push: true
+  artifacts:
+    - image: loserforever/chatssy-client-dev
+      context: client
+      docker:
+        dockerfile: Dockerfile.dev
+      sync:
+        manual:
+          - src: "**/*"
+            dest: .
+    - image: loserforever/chatssy-server-dev
+      context: server
+      docker:
+        dockerfile: Dockerfile.dev
+      sync:
+        manual:
+          - src: "**/*"
+            dest: .
+deploy:
+  kubectl:
+    manifests:
+      - "./infra/k8s-dev/*.yml"
+      - "./infra/k8s/*.yml"
