@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,WAAW,CAAC;EACV,KAAK,EAAE,IAAI;EACX,MAAM,EAAE,IAAI;EACZ,QAAQ,EAAE,MAAM;EAChB,OAAO,EAAE,MAAM;CAKhB",
+    "sources": [
+        "SearchSide.module.scss"
+    ],
+    "names": [],
+    "file": "SearchSide.module.css"
+}

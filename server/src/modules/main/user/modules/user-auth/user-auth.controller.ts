@@ -2,15 +2,15 @@ import { Body, Controller, Post, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ChatssyApiTags } from 'src/constant/docs';
 import { ChatssyApiQuery } from 'src/decorators/swagger/chatssy-api-query.decorator';
+import { UserAuthService } from './user-auth.service';
+import { ResetPasswordStep1Body } from './validations/reset-password-step-1';
 import {
-  ResetPasswordStep1Body,
   ResetPasswordStep2Body,
   ResetPasswordStep2Query,
-} from './validations';
-import { UserAuthService } from './user-auth.service';
+} from './validations/reset-password-step-2';
 
 @ApiTags(ChatssyApiTags.User)
-@Controller('user/auth')
+@Controller('users/auth')
 export class UserAuthController {
   constructor(private service: UserAuthService) {}
 
@@ -19,7 +19,7 @@ export class UserAuthController {
     @Body()
     { payload }: ResetPasswordStep1Body,
   ) {
-    this.service.resetPassword1(payload.email);
+    this.service.resetPasswordStep1(payload.email);
     return null;
   }
 
@@ -30,6 +30,6 @@ export class UserAuthController {
     @Body()
     { payload }: ResetPasswordStep2Body,
   ) {
-    return this.service.resetPassword2(user_id, token, payload.password);
+    return this.service.resetPasswordStep2(user_id, token, payload.password);
   }
 }

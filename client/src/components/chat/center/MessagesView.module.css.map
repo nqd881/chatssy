@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,aAAa,CAAC;EACZ,IAAI,EAAE,CAAC;EACP,MAAM,EAAE,CAAC;EACT,QAAQ,EAAE,QAAQ;EAClB,UAAU,EAAE,WAAW;CACxB",
+    "sources": [
+        "MessagesView.module.scss"
+    ],
+    "names": [],
+    "file": "MessagesView.module.css"
+}

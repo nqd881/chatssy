@@ -1,4 +1,4 @@
-import { UserRoles } from '@schemas';
+import { UserTypes } from '@modules/extra/models/user/user.model';
 
 export function autoDeclare() {}
 
@@ -7,7 +7,7 @@ declare module 'express-session' {
     id: string;
     name: string;
     email: string;
-    role: UserRoles;
+    role: UserTypes;
     visit: number;
   };
 

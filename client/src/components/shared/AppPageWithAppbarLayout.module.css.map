@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,KAAK,CAAC;EACJ,KAAK,EAAE,KAAK;EACZ,MAAM,EAAE,KAAK;EACb,OAAO,EAAE,IAAI;EACb,cAAc,EAAE,GAAG;EACnB,eAAe,EAAE,UAAU;EAC3B,WAAW,EAAE,MAAM;CACpB;;AAED,AAAA,IAAI,CAAC;EACH,IAAI,EAAE,CAAC;EACP,MAAM,EAAE,IAAI;CACb",
+    "sources": [
+        "AppPageWithAppbarLayout.module.scss"
+    ],
+    "names": [],
+    "file": "AppPageWithAppbarLayout.module.css"
+}

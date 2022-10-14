@@ -1,23 +1,20 @@
-import { Chat, ChatDocument, ChatModel } from '@modules/extra/database/schemas';
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
+import { Chat, ChatModel } from '@modules/extra/models/chat.model';
+import { ForbiddenException, Injectable } from '@nestjs/common';
+import { InjectModel } from 'nestgoose';
 import { UserChatsService } from '../user/modules/user-chats/user-chats.service';
 import { CreateNewChatData } from './data-types';
 
 @Injectable()
 export class ChatService {
   constructor(
-    @InjectModel(Chat.name) private model: ChatModel,
+    @InjectModel(Chat) private model: ChatModel,
     private userChatsService: UserChatsService,
   ) {}
 
-  checkIsMember(chat: ChatDocument, userId: string) {
-    return chat.members.some((member) => member.user_id === userId);
-  }
-
-  async getOneChat(userId: string, chatId: string) {
+  async getChat(userId: string, chatId: string) {
     const chat = await this.model.findById(chatId);
-    //Missing: Check user is a member of the chat
+
+    if (!chat.checkIsMember(userId)) throw new ForbiddenException();
     return chat;
   }
 
@@ -26,7 +23,7 @@ export class ChatService {
       ...data,
       members: data.members.map((memberId) => ({
         user_id: memberId,
-        is_admin: memberId === data.creator,
+        is_admin: memberId === data.creator_id,
       })),
     });
 

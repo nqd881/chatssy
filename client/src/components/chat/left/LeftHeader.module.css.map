@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,WAAW,CAAC;EACV,KAAK,EAAE,IAAI;EACX,OAAO,EAAE,MAAM;EACf,UAAU,EAAE,IAAI;EAChB,MAAM,EAAE,OAAO;CAMhB;;AAVD,AAME,WANS,CAMT,MAAM,CAAC;EACL,WAAW,EAAE,GAAG;EAChB,SAAS,EAAE,MAAM;CAClB",
+    "sources": [
+        "LeftHeader.module.scss"
+    ],
+    "names": [],
+    "file": "LeftHeader.module.css"
+}

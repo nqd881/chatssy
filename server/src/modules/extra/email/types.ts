@@ -2,8 +2,6 @@ import { Data } from 'ejs';
 import { MailOptions } from 'nodemailer/lib/json-transport';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
 
-export const GOOGLE_MAILER_CLIENT = 'GOOGLE_MAILER_CLIENT';
-
 export interface InternalTemplateConstructor<T> {
   new (data: T): InternalTemplate<T>;
 }

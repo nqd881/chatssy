@@ -1,0 +1,46 @@
+.VerticalScrollableView {
+  height: 100%;
+  width: 100%;
+  overflow: hidden overlay;
+}
+
+.VerticalScrollableView:hover::-webkit-scrollbar {
+  visibility: visible;
+}
+
+.VerticalScrollableView:hover::-webkit-scrollbar-track {
+  visibility: visible;
+}
+
+.VerticalScrollableView:hover::-webkit-scrollbar-thumb {
+  visibility: visible;
+}
+
+.VerticalScrollableView::-webkit-scrollbar {
+  visibility: hidden;
+  width: 0.4rem;
+  background-color: transparent;
+  border-radius: 0.2rem;
+}
+
+.VerticalScrollableView::-webkit-scrollbar-track {
+  visibility: hidden;
+  margin: 1rem 0;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 0.2rem;
+}
+
+.VerticalScrollableView::-webkit-scrollbar-thumb {
+  visibility: hidden;
+  background-color: #6c6c6c;
+  border-radius: 0.2rem;
+}
+
+.VerticalScrollableView::-webkit-scrollbar-thumb:hover {
+  background-color: #6c6c6c;
+}
+
+.hidden::-webkit-scrollbar {
+  display: none !important;
+}
+/*# sourceMappingURL=VerticalScrollableView.module.css.map */

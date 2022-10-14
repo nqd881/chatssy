@@ -1,24 +1,11 @@
-import {
-  Chat,
-  User,
-  UserChat,
-  UserChatStates,
-  UserModel,
-} from '@modules/extra/database/schemas';
+import { UserChatStates } from '@modules/extra/models/user/user-chat.model';
+import { User, UserModel } from '@modules/extra/models/user/user.model';
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
 import { toArray } from '@utils';
 import mongoose from 'mongoose';
-import { combineQueries } from '../../mongoose-query/combine-queries';
-import { IdFilter } from '../../mongoose-query/filter/id';
-import { UserChatFilter } from '../../mongoose-query/filter/user-chat.filter';
-import {
-  AddChatQuery,
-  UpdateChatQuery,
-} from '../../mongoose-query/update/chats';
+import { InjectModel } from 'nestgoose';
 import { UpdateUserChatData } from './data-types';
-
-export type UserChatDetails = UserChat & { info: Chat };
+import { UserChatDetails } from './return-types';
 
 export type GetUserChatsOptions = {
   states?: UserChatStates[];
@@ -27,12 +14,19 @@ export type GetUserChatsOptions = {
 
 @Injectable()
 export class UserChatsService {
-  constructor(@InjectModel(User.name) private model: UserModel) {}
+  constructor(@InjectModel(User) private model: UserModel) {}
 
   addChatToMembers(chatId: string, memberIds: string[]) {
-    return this.model
-      .updateMany(IdFilter(...memberIds), AddChatQuery(chatId))
-      .exec();
+    const updateQuery = {
+      $push: {
+        chats: {
+          chat_id: chatId,
+          state: UserChatStates.STARTED,
+        },
+      },
+    };
+
+    return this.model.updateMany({ _id: memberIds }, updateQuery).exec();
   }
 
   async getUserChats(userId: string, options?: GetUserChatsOptions) {
@@ -110,8 +104,7 @@ export class UserChatsService {
   }
 
   async getUserChat(userId: string, chatId: string) {
-    const result = (await this.getUserChats(userId, { ids: [chatId] }))[0];
-    return result;
+    return this.getUserChats(userId, { ids: [chatId] })[0];
   }
 
   async updateUserChat(
@@ -119,10 +112,19 @@ export class UserChatsService {
     chatId: string,
     data: UpdateUserChatData,
   ) {
+    const updateQuery = {};
+
     const user = await this.model.findOneAndUpdate(
-      combineQueries(IdFilter(userId), UserChatFilter(chatId)),
-      UpdateChatQuery(data.state),
-      { new: true },
+      {
+        _id: userId,
+        'chats.chat_id': chatId,
+      },
+      {
+        'chats.$.state': data.state,
+      },
+      {
+        new: true,
+      },
     );
 
     return user;

@@ -1,0 +1,12 @@
+.LeftHeader {
+  width: 100%;
+  padding: 1.2rem;
+  margin-top: 1rem;
+  cursor: default;
+}
+
+.LeftHeader .title {
+  font-weight: 900;
+  font-size: 1.8rem;
+}
+/*# sourceMappingURL=LeftHeader.module.css.map */

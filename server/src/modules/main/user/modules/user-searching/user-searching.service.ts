@@ -1,17 +1,17 @@
-import { User, UserModel } from '@modules/extra/database/schemas';
+import { User, UserModel } from '@modules/extra/models/user/user.model';
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
+import { InjectModel } from 'nestgoose';
 
 @Injectable()
 export class UserSearchingService {
-  constructor(@InjectModel(User.name) private model: UserModel) {}
+  constructor(@InjectModel(User) private model: UserModel) {}
 
   findById(userId: any) {
     return this.model.findById(userId);
   }
 
   findByEmail(email: string) {
-    return this.model.findOne({ email });
+    return this.model.findOne({ 'email.address': email });
   }
 
   findByUsername(username: string) {

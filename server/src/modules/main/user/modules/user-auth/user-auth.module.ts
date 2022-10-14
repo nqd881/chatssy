@@ -1,17 +1,17 @@
-import { DatabaseModule } from '@modules/extra/database';
-import { User } from '@modules/extra/database/schemas';
 import { EmailModule } from '@modules/extra/email';
-import { VerificationTokenModule } from '@modules/extra/verification_token';
+import { User } from '@modules/extra/models/user/user.model';
+import { TokenModule } from '@modules/main/token';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { NestgooseModule } from 'nestgoose';
 import { UserAuthController } from './user-auth.controller';
 import { UserAuthService } from './user-auth.service';
 
 @Module({
   imports: [
-    ...DatabaseModule.use(User),
+    NestgooseModule.forFeature([User]),
     EmailModule,
-    VerificationTokenModule,
+    TokenModule,
     ConfigModule,
   ],
   controllers: [UserAuthController],

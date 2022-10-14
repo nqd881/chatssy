@@ -1,12 +1,10 @@
-import { UserDocument } from '@modules/extra/database/schemas';
 import { EmailService } from '@modules/extra/email';
+import { UserDoc } from '@modules/extra/models/user/user.model';
 import { OtpService } from '@modules/extra/otp';
-import { PasswordService } from '@modules/extra/password';
-import { REDIS } from '@modules/extra/redis_cache';
+import { REDIS } from '@modules/extra/redis-cache';
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ChatssyReq, ChatssyRes } from '@types';
-// import { ChatssyReq, ChatssyRes } from '@types';
 import { OAuth2Client } from 'google-auth-library';
 import * as IORedis from 'ioredis';
 import { Env } from 'src/env/types';
@@ -32,9 +30,6 @@ export class AuthService {
   emailService: EmailService;
 
   @Inject()
-  passwordService: PasswordService;
-
-  @Inject()
   otpService: OtpService;
 
   @Inject()
@@ -48,11 +43,7 @@ export class AuthService {
 
   constructor() {}
 
-  private async coreLogin(
-    req: ChatssyReq,
-    res: ChatssyRes,
-    user: UserDocument,
-  ) {
+  private async coreLogin(req: ChatssyReq, res: ChatssyRes, user: UserDoc) {
     this.createSession(req, user);
     res.cookie('CSRF-Token', this.csrfService.create());
     return res.json({ data: user });

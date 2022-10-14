@@ -1,3 +1,3 @@
-import { UserAuth } from '@modules/extra/database/schemas';
+import { UserAuth } from '@modules/extra/models/user/user-auth.model';
 
 export type UpdateUserAuthData = Partial<UserAuth>;

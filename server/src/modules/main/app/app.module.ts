@@ -1,11 +1,11 @@
-import { InjectRedis, RedisCacheModule } from '@modules/extra/redis_cache';
+import { InjectRedis, RedisCacheModule } from '@modules/extra/redis-cache';
 import { Inject, MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { MongooseModule } from '@nestjs/mongoose';
 import RedisStore from 'connect-redis';
 import session from 'express-session';
 import * as IORedis from 'ioredis';
 import ms from 'ms';
+import { NestgooseModule } from 'nestgoose';
 import { Env } from 'src/env/types';
 import { validate } from 'src/env/validations';
 import { getEnvFilePath, isInDev, isInProd } from 'src/utils/env.utils';
@@ -14,6 +14,7 @@ import { ChatModule } from '../chat';
 import { UserModule } from '../user';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import useragent from 'express-useragent';
 
 const modulesImported = [
   ConfigModule.forRoot({
@@ -21,16 +22,17 @@ const modulesImported = [
     isGlobal: true,
     validate,
   }),
-  MongooseModule.forRootAsync({
+
+  NestgooseModule.forRootAsync({
     imports: [ConfigModule],
     inject: [ConfigService],
     useFactory: async (config: ConfigService) => ({
       uri: config.get(Env.MONGO_URI),
     }),
   }),
+  UserModule,
   RedisCacheModule,
   AuthModule,
-  UserModule,
   ChatModule,
 ];
 
@@ -63,6 +65,7 @@ export class AppModule implements NestModule {
             maxAge: ms('30days'),
           },
         }),
+        useragent.express(),
       )
       .forRoutes('*');
   }

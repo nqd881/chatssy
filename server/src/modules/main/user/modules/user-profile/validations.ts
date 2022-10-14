@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { ChatssyReqBody } from '@types';
 import { Type } from 'class-transformer';
 import { IsDate, IsString, ValidateNested } from 'class-validator';
+import { ApiNestedValidate } from 'src/decorators/swagger/api-nested-validate.decorator';
 
 export class UpdateUserProfilePayload {
   @ApiProperty()
@@ -18,8 +19,6 @@ export class UpdateUserProfilePayload {
 }
 
 export class UpdateUserProfileReqBody extends ChatssyReqBody<UpdateUserProfilePayload> {
-  @ApiProperty()
-  @ValidateNested()
-  @Type(() => UpdateUserProfilePayload)
+  @ApiNestedValidate(UpdateUserProfilePayload)
   payload: UpdateUserProfilePayload;
 }

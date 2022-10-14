@@ -1,5 +1,5 @@
-import { EjsTemplateModule } from '@modules/extra/ejs_template';
 import { Module } from '@nestjs/common';
+import { EjsTemplateModule } from '../ejs-template';
 import { UserAuthModule } from './modules/user-auth/user-auth.module';
 import { UserChatsModule } from './modules/user-chats/user-chats.module';
 import { UserProfileModule } from './modules/user-profile/user-profile.module';

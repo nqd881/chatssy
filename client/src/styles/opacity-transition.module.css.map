@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAEA,AAAA,mBAAmB,CAAC;EAClB,UAAU,EAAE,OAAO,CAHC,IAAI,CAGiB,4BAA4B,EACnE,SAAS,CAJS,IAAI,CAIS,4BAA4B,CAAC,UAAU;CACzE;;AAED,AAAA,KAAK,CAAC;EACJ,OAAO,EAAE,CAAC;EACV,SAAS,EAAE,QAAQ;CACpB;;AAED,AAAA,MAAM,CAAC;EACL,OAAO,EAAE,CAAC;EACV,SAAS,EAAE,QAAQ;CACpB",
+    "sources": [
+        "opacity-transition.module.scss"
+    ],
+    "names": [],
+    "file": "opacity-transition.module.css"
+}

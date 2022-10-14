@@ -1,0 +1,14 @@
+.opacity-transition {
+  transition: opacity 0.2s cubic-bezier(0.2, 0, 0.2, 1), transform 0.2s cubic-bezier(0.2, 0, 0.2, 1) !important;
+}
+
+.open {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.close {
+  opacity: 0;
+  transform: scale(0);
+}
+/*# sourceMappingURL=opacity-transition.module.css.map */

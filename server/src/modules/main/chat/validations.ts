@@ -5,24 +5,14 @@ import {
   ArrayNotEmpty,
   ArrayUnique,
   IsArray,
-  IsBoolean,
   IsString,
-  IsUrl,
   ValidateNested,
 } from 'class-validator';
 
 export class CreateNewChatPayload {
   @ApiProperty()
   @IsString()
-  name: string;
-
-  @ApiProperty()
-  @IsBoolean()
-  private: boolean;
-
-  @ApiProperty()
-  @IsUrl()
-  avatar_url: string;
+  title: string;
 
   @ApiProperty()
   @ArrayUnique()

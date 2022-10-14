@@ -1,8 +1,6 @@
-import { UserChatStates } from '@modules/extra/database/schemas';
 import {
   Body,
   Controller,
-  ForbiddenException,
   Get,
   Param,
   Patch,
@@ -38,16 +36,16 @@ export class ChatController {
 
   @Get(':chat_id')
   @UseGuards(AuthGuard)
-  async getOneChat(
+  async getChat(
     @Session('user') user: SessionUser,
     @Param() { chat_id }: ChatIdentificationParam,
   ) {
-    return this.service.getOneChat(user.id, chat_id);
+    return this.service.getChat(user.id, chat_id);
   }
 
-  @Patch(':chat_id/members')
+  @Patch(':chat_id/members/:member_id')
   @UseGuards(AuthGuard)
-  async updateChatMembers(
+  async updateChatMember(
     @Req() req: Request,
     @Param() { chat_id }: ChatIdentificationParam,
   ) {

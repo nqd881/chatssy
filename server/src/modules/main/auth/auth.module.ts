@@ -1,7 +1,6 @@
 import { EmailModule } from '@modules/extra/email';
 import { OtpModule } from '@modules/extra/otp';
-import { PasswordModule } from '@modules/extra/password';
-import { RedisCacheModule } from '@modules/extra/redis_cache';
+import { RedisCacheModule } from '@modules/extra/redis-cache';
 import { Module } from '@nestjs/common';
 import { UserAuthModule } from '../user/modules/user-auth/user-auth.module';
 import { UserRegistrationModule } from '../user/modules/user-registration/user-registration.module';
@@ -16,7 +15,6 @@ import { SessionService } from './services/session.service';
     RedisCacheModule,
     EmailModule,
     OtpModule,
-    PasswordModule,
     UserSearchingModule,
     UserRegistrationModule,
     UserAuthModule,

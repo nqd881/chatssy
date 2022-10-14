@@ -1,9 +1,25 @@
-import { TfaPayload } from '@modules/main/tfa_process/types2';
-import { ApiPropertyOptional } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
-import { ValidateNested } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsEnum, IsString } from 'class-validator';
 import { Request, Response } from 'express';
 import * as core from 'express-serve-static-core';
+import { ApiNestedValidate } from 'src/decorators/swagger/api-nested-validate.decorator';
+
+export enum TfaCodeTypes {
+  VERIFICATION_CODE = 'verification_code',
+  TOTP = 'totp',
+  BACKUP_CODE = 'backup_code',
+}
+
+export class TfaPayload {
+  @ApiProperty({ enum: Object.values(TfaCodeTypes) })
+  @IsEnum(TfaCodeTypes)
+  @IsString()
+  type: TfaCodeTypes;
+
+  @ApiProperty()
+  @IsString()
+  code: string;
+}
 
 export interface ChatssyResBody<Data = any> {
   data: Data;
@@ -13,9 +29,11 @@ export interface ChatssyResBody<Data = any> {
 export abstract class ChatssyReqBody<Payload = any> {
   abstract payload: Payload;
 
-  @ApiPropertyOptional({ type: TfaPayload })
-  @ValidateNested()
-  @Type(() => TfaPayload)
+  @ApiNestedValidate(TfaPayload, {
+    apiPropertyOptions: {
+      required: false,
+    },
+  })
   tfa?: TfaPayload;
 }
 

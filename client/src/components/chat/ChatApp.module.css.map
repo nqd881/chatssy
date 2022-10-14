@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,QAAQ,CAAC;EACP,KAAK,EAAE,IAAI;EACX,MAAM,EAAE,IAAI;EACZ,QAAQ,EAAE,MAAM;EAChB,OAAO,EAAE,IAAI;EACb,cAAc,EAAE,GAAG;EACnB,eAAe,EAAE,UAAU;EAC3B,WAAW,EAAE,MAAM;EACnB,QAAQ,EAAE,QAAQ;CAEnB",
+    "sources": [
+        "ChatApp.module.scss"
+    ],
+    "names": [],
+    "file": "ChatApp.module.css"
+}

@@ -1,26 +1,18 @@
-import { EjsTemplateService } from '@modules/extra/ejs_template';
+import { EjsTemplateService } from '@modules/main/ejs-template';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { isString } from 'class-validator';
 import { Data } from 'ejs';
-import { OAuth2Client } from 'google-auth-library';
 import * as nodemailer from 'nodemailer';
 import { MailOptions } from 'nodemailer/lib/json-transport';
 import { Env } from 'src/env/types';
-import { ChatssyEmail } from './chatssyEmail';
-import {
-  GOOGLE_MAILER_CLIENT,
-  InternalTemplateConstructor,
-  TemplateSender,
-} from './types';
+import { ChatssyEmail } from './chatssy-email';
+import { InternalTemplateConstructor, TemplateSender } from './types';
 
 @Injectable()
 export class EmailService {
   @Inject()
   private ejsTemplateService: EjsTemplateService;
-
-  @Inject(GOOGLE_MAILER_CLIENT)
-  private mailerClient: OAuth2Client;
 
   @Inject()
   private envConfig: ConfigService;

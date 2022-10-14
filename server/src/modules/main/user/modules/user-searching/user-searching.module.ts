@@ -1,10 +1,10 @@
-import { DatabaseModule } from '@modules/extra/database';
-import { User } from '@modules/extra/database/schemas';
+import { User } from '@modules/extra/models/user/user.model';
 import { Module } from '@nestjs/common';
+import { NestgooseModule } from 'nestgoose';
 import { UserSearchingService } from './user-searching.service';
 
 @Module({
-  imports: [...DatabaseModule.use(User.name)],
+  imports: [NestgooseModule.forFeature([User])],
   providers: [UserSearchingService],
   exports: [UserSearchingService],
 })

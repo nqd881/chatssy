@@ -1,7 +1,8 @@
-import { UserChatStates } from '@modules/extra/database/schemas';
+import { UserChatStates } from '@modules/extra/models/user/user-chat.model';
 import {
   Body,
   Controller,
+  ForbiddenException,
   Get,
   Param,
   Patch,
@@ -16,26 +17,24 @@ import { ChatssyApiQuery } from 'src/decorators/swagger/chatssy-api-query.decora
 import { AuthGuard } from 'src/guards';
 import { UserIdentificationParam } from '../../types/shared';
 import { UserChatsService } from './user-chats.service';
-import {
-  GetAllChatsQuery,
-  UpdateUserChatReqBody,
-  UserChatIdentificationParam,
-} from './validations';
-
+import { GetUserChatsQuery } from './validations/get-user-chats';
+import { UserChatIdentificationParam } from './validations/shared';
+import { UpdateUserChatReqBody } from './validations/update-user-chat';
 @ApiTags(ChatssyApiTags.User)
-@Controller('user/:user_id/chats')
+@Controller('users/:user_id/chats')
+@UseGuards(AuthGuard)
 export class UserChatsController {
   constructor(private service: UserChatsService) {}
 
   @Get()
-  @UseGuards(AuthGuard)
-  @ChatssyApiQuery(GetAllChatsQuery)
-  async getAllUserChats(
+  @ChatssyApiQuery(GetUserChatsQuery)
+  async getAllChats(
     @Session('user') user: SessionUser,
     @Param() { user_id }: UserIdentificationParam,
-    @Query() query: GetAllChatsQuery,
+    @Query() query: GetUserChatsQuery,
   ) {
-    if (user_id != user.id) return null;
+    if (user_id != user.id) throw new ForbiddenException();
+
     const options = {
       ...query,
       states: query.states ?? [UserChatStates.STARTED],
@@ -45,24 +44,22 @@ export class UserChatsController {
   }
 
   @Get(':chat_id')
-  @UseGuards(AuthGuard)
-  async getUserChat(
+  async getOneChat(
     @Session('user') user: SessionUser,
     @Param() { user_id, chat_id }: UserChatIdentificationParam,
   ) {
-    if (user_id != user.id) return null;
+    if (user_id != user.id) throw new ForbiddenException();
 
     return this.service.getUserChat(user_id, chat_id);
   }
 
   @Patch(':chat_id')
-  @UseGuards(AuthGuard)
-  async updateUserChat(
+  async updateChat(
     @Session('user') user: SessionUser,
     @Param() { user_id, chat_id }: UserChatIdentificationParam,
     @Body() { payload }: UpdateUserChatReqBody,
   ) {
-    if (user_id != user.id) return null;
+    if (user_id != user.id) throw new ForbiddenException();
 
     return this.service.updateUserChat(user_id, chat_id, payload);
   }
