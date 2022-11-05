@@ -14,7 +14,7 @@ export class Document {
   @prop({ required: true })
   mime_type: string;
 
-  @prop()
+  @prop({ default: null })
   thumbnail: File;
 
   @prop({ required: true })

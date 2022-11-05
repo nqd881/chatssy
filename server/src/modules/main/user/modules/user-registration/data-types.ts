@@ -1,4 +1,4 @@
-export type CreateUserWithEmailData = {
+export type CreateUserData = {
   first_name: string;
   last_name: string;
   username: string;

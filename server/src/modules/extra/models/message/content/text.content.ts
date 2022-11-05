@@ -2,7 +2,7 @@ import { modelOptions, prop } from '@typegoose/typegoose';
 import { WebPage } from '../../webpage.model';
 
 @modelOptions({})
-export class MessageTextContent {
+export class TextContent {
   @prop({ required: true })
   text: string;
 

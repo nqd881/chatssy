@@ -1,7 +1,7 @@
 import { User, UserModel } from '@modules/extra/models/user/user.model';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from 'nestgoose';
-import { flattenToDotObject } from '@modules/utils';
+import { flattenToDotObject } from '@utils';
 import { UserSearchingService } from '../user-searching/user-searching.service';
 import { UpdateUserProfileData } from './data-types';
 

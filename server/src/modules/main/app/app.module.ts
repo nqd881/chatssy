@@ -1,20 +1,34 @@
-import { InjectRedis, RedisCacheModule } from '@modules/extra/redis-cache';
-import { Inject, MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import {
+  CacheModule,
+  CACHE_MANAGER,
+  Inject,
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+} from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import RedisStore from 'connect-redis';
+import { getEnvFilePath, isInDev, isInProd, parseTimeMs } from '@utils';
+import { Cache } from 'cache-manager';
+import RedisCacheStoreFactory from 'cache-manager-ioredis';
+import RedisSessionStore from 'connect-redis';
 import session from 'express-session';
-import * as IORedis from 'ioredis';
-import ms from 'ms';
 import { NestgooseModule } from 'nestgoose';
 import { Env } from 'src/env/types';
 import { validate } from 'src/env/validations';
-import { getEnvFilePath, isInDev, isInProd } from 'src/utils/env.utils';
+import { UserAgentMiddleware } from 'src/middlewares/user-agent.middleware';
+import { v4 as uuidv4 } from 'uuid';
 import { AuthModule } from '../auth';
 import { ChatModule } from '../chat';
+import { MessageModule } from '../message';
+import { SessionModule } from '../session';
+import { TfaModule } from '../tfa/tfa.module';
 import { UserModule } from '../user';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import useragent from 'express-useragent';
+
+type RedisCacheStore = ReturnType<typeof RedisCacheStoreFactory['create']>;
 
 const modulesImported = [
   ConfigModule.forRoot({
@@ -22,18 +36,57 @@ const modulesImported = [
     isGlobal: true,
     validate,
   }),
-
   NestgooseModule.forRootAsync({
-    imports: [ConfigModule],
     inject: [ConfigService],
     useFactory: async (config: ConfigService) => ({
       uri: config.get(Env.MONGO_URI),
     }),
   }),
+  CacheModule.registerAsync({
+    inject: [ConfigService],
+    useFactory: (envConfig: ConfigService) => {
+      return {
+        store: RedisCacheStoreFactory,
+        host: envConfig.get(Env.REDIS_HOST),
+        port: envConfig.get(Env.REDIS_PORT),
+      };
+    },
+  }),
+  MailerModule.forRootAsync({
+    inject: [ConfigService],
+    useFactory: (envConfig: ConfigService) => {
+      return {
+        transport: {
+          host: 'smtp.gmail.com',
+          port: 465,
+          secure: true,
+          auth: {
+            type: 'OAuth2',
+            user: envConfig.get(Env.GOOGLE_ADMIN_EMAIL_ADDRESS),
+            clientId: envConfig.get(Env.GOOGLE_CLIENT_ID),
+            clientSecret: envConfig.get(Env.GOOGLE_CLIENT_SECRET),
+            refreshToken: envConfig.get(Env.GOOGLE_MAILER_REFRESH_TOKEN),
+          },
+        },
+        defaults: {
+          from: 'Chatssy',
+        },
+        template: {
+          dir: `${process.cwd()}/src/templates`,
+          adapter: new HandlebarsAdapter(),
+          options: {
+            strict: true,
+          },
+        },
+      };
+    },
+  }),
   UserModule,
-  RedisCacheModule,
   AuthModule,
   ChatModule,
+  TfaModule,
+  SessionModule,
+  MessageModule,
 ];
 
 @Module({
@@ -42,30 +95,30 @@ const modulesImported = [
   providers: [AppService],
 })
 export class AppModule implements NestModule {
-  @InjectRedis
-  redis: IORedis.Redis;
-
-  @Inject()
-  envConfig: ConfigService;
+  constructor(
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    private envConfig: ConfigService,
+  ) {}
 
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(
         session({
-          store: new (RedisStore(session))({
-            client: this.redis,
+          store: new (RedisSessionStore(session))({
+            client: (this.cacheManager.store as RedisCacheStore).getClient(),
             logErrors: true,
           }),
-          secret: this.envConfig.get(Env.COOKIE_SECRET),
+          genid: () => uuidv4(),
+          secret: this.envConfig.get(Env.SESSION_SECRET),
           resave: false,
           saveUninitialized: false,
           cookie: {
             httpOnly: true,
             secure: isInProd() ? true : false,
-            maxAge: ms('30days'),
+            maxAge: parseTimeMs(this.envConfig.get(Env.SESSION_MAX_AGE)),
           },
         }),
-        useragent.express(),
+        UserAgentMiddleware,
       )
       .forRoutes('*');
   }

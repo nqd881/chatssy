@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { EjsTemplateModule } from '../ejs-template';
 import { UserAuthModule } from './modules/user-auth/user-auth.module';
 import { UserChatsModule } from './modules/user-chats/user-chats.module';
 import { UserProfileModule } from './modules/user-profile/user-profile.module';
@@ -8,7 +7,6 @@ import { UserSettingModule } from './modules/user-setting/user-setting.module';
 
 @Module({
   imports: [
-    EjsTemplateModule.registerFolders('src/modules/main/user/templates'),
     UserRegistrationModule,
     UserAuthModule,
     UserProfileModule,

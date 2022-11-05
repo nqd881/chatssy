@@ -1,2 +1,2 @@
-export * from './chatssy';
+export * from './tfa';
 export * from './declare';

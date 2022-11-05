@@ -1,4 +1,8 @@
-import { User, UserModel } from '@modules/extra/models/user/user.model';
+import {
+  User,
+  UserDoc,
+  UserModel,
+} from '@modules/extra/models/user/user.model';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from 'nestgoose';
 
@@ -16,5 +20,14 @@ export class UserSearchingService {
 
   findByUsername(username: string) {
     return this.model.findOne({ 'auth.username': username });
+  }
+
+  async fetchUserById(arg: string | UserDoc): Promise<UserDoc> {
+    if (typeof arg === 'string') {
+      let id = arg;
+      return this.findById(id).exec();
+    }
+
+    return arg;
   }
 }

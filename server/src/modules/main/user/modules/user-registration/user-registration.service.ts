@@ -1,5 +1,3 @@
-import { EmailService } from '@modules/extra/email';
-import { ChatssyEmail } from '@modules/extra/email/chatssy-email';
 import {
   User,
   UserDoc,
@@ -10,29 +8,31 @@ import { Injectable } from '@nestjs/common';
 import crypto from 'crypto';
 import { InjectModel } from 'nestgoose';
 import { v4 as uuidv4 } from 'uuid';
-import { ConfirmEmailTemplate } from '../../templates/ConfirmEmailTemplate';
-import { flattenToDotObject } from '@modules/utils';
-import { CreateUserWithEmailData } from './data-types';
+import { flattenToDotObject } from '@utils';
+import { CreateUserData } from './data-types';
+import { MailerService } from '@nestjs-modules/mailer';
+import { UserAuthService } from '../user-auth/user-auth.service';
 @Injectable()
 export class UserRegistrationService {
   constructor(
     @InjectModel(User) private model: UserModel,
     private tokenService: TokenService,
-    private emailService: EmailService,
+    private mailerService: MailerService,
+    private userAuthService: UserAuthService,
   ) {}
 
-  async createUserWithEmail({
+  async createUser({
     first_name,
     last_name,
     username,
     password,
     birth_date,
     email,
-  }: CreateUserWithEmailData) {
+  }: CreateUserData) {
     return this.model.create({
       auth: {
         username,
-        password,
+        password: await this.userAuthService.hashPassword(password),
       },
       email: {
         address: email,
@@ -46,20 +46,20 @@ export class UserRegistrationService {
   }
 
   async sendVerifyUserEmail(user: UserDoc, token: string) {
-    const url = `http://localhost:3000/users/registration/email/verify?user_id=${user.id}&token=${token}`;
-    const email = new ChatssyEmail(
-      {
-        to: user.email.address,
-        subject: 'Confirm Email',
-      },
-      ConfirmEmailTemplate,
-    ).bind({ url });
+    const url = `http://localhost:3000/users/registration/email?user_id=${user.id}&token=${token}`;
 
-    this.emailService.send(email);
+    this.mailerService.sendMail({
+      to: user.email.address,
+      subject: 'Confirm Email',
+      template: 'confirm_email',
+      context: {
+        url,
+      },
+    });
   }
 
-  async registerWithEmail(data: CreateUserWithEmailData) {
-    const newUser = await this.createUserWithEmail(data);
+  async register(data: CreateUserData) {
+    const newUser = await this.createUser(data);
     const token = await this.tokenService.create('10m');
 
     this.sendVerifyUserEmail(newUser, token.code);

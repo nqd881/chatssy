@@ -9,12 +9,13 @@ import {
 } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
 import { ApiTags } from '@nestjs/swagger';
-import { ChatssyReq, ChatssyRes } from '@types';
+import { Request, Response } from 'express';
 import { Connection } from 'mongoose';
 import { ChatssyApiTags } from 'src/constant/docs';
-import { AuthGuard } from 'src/guards';
+import { CookieAuthGuard } from 'src/guards';
 import { AuthService } from './auth.service';
-import { LoginReqBody, LoginWithGoogleReqBody } from './validations';
+import { LoginDto } from './dto/login';
+import { LoginWithGoogleDto } from './dto/login-google';
 
 @ApiTags(ChatssyApiTags.Auth)
 @Controller('auth')
@@ -25,32 +26,28 @@ export class AuthController {
   ) {}
 
   @Post('login')
-  login(
-    @Req() req: ChatssyReq,
-    @Res() res: ChatssyRes,
-    @Body() { payload }: LoginReqBody,
-  ) {
-    return this.service.login(req, res, payload);
+  login(@Req() req: Request, @Res() res: Response, @Body() dto: LoginDto) {
+    return this.service.login(req, res, dto);
   }
 
   @Post('login_google')
   loginGoogle(
-    @Req() req: ChatssyReq,
-    @Res() res: ChatssyRes,
-    @Body() { payload }: LoginWithGoogleReqBody,
+    @Req() req: Request,
+    @Res() res: Response,
+    @Body() dto: LoginWithGoogleDto,
   ) {
-    return this.service.loginWithGoogle(req, res, payload.token);
+    return this.service.loginWithGoogle(req, res, dto.token);
   }
 
   @Get('me')
-  @UseGuards(AuthGuard)
-  me(@Req() req: ChatssyReq) {
+  @UseGuards(CookieAuthGuard)
+  me(@Req() req: Request) {
     return this.service.detectMe(req);
   }
 
   @Get('logout')
-  @UseGuards(AuthGuard)
-  logout(@Req() req: ChatssyReq) {
-    return this.service.logout(req);
+  @UseGuards(CookieAuthGuard)
+  logout(@Req() req: Request, @Res() res: Response) {
+    return this.service.logout(req, res);
   }
 }

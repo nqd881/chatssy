@@ -1,3 +1,3 @@
-import { LoginPayload } from './validations';
+import { LoginDto } from './dto/login';
 
-export type LoginData = LoginPayload;
+export type LoginData = LoginDto;

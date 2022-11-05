@@ -1,4 +1,5 @@
 import { UserChatStates } from '@modules/extra/models/user/user-chat.model';
+import { SessionUserData } from '@modules/main/session';
 import {
   Body,
   Controller,
@@ -10,27 +11,26 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { SessionUser } from 'express-session';
 import { ChatssyApiTags } from 'src/constant/docs';
 import { Session } from 'src/decorators/session.decorator';
-import { ChatssyApiQuery } from 'src/decorators/swagger/chatssy-api-query.decorator';
-import { AuthGuard } from 'src/guards';
-import { UserIdentificationParam } from '../../types/shared';
+import { ApiQueries } from 'src/decorators/swagger/api-queries.decorator';
+import { CookieAuthGuard } from 'src/guards';
+import { UserParam } from '../../types/shared';
+import { GetUserChatsQuery } from './dto/get-user-chats';
+import { UserChatParam } from './dto/shared';
+import { UpdateUserChatDto } from './dto/update-user-chat';
 import { UserChatsService } from './user-chats.service';
-import { GetUserChatsQuery } from './validations/get-user-chats';
-import { UserChatIdentificationParam } from './validations/shared';
-import { UpdateUserChatReqBody } from './validations/update-user-chat';
 @ApiTags(ChatssyApiTags.User)
 @Controller('users/:user_id/chats')
-@UseGuards(AuthGuard)
+@UseGuards(CookieAuthGuard)
 export class UserChatsController {
   constructor(private service: UserChatsService) {}
 
   @Get()
-  @ChatssyApiQuery(GetUserChatsQuery)
+  @ApiQueries(GetUserChatsQuery)
   async getAllChats(
-    @Session('user') user: SessionUser,
-    @Param() { user_id }: UserIdentificationParam,
+    @Session('user') user: SessionUserData,
+    @Param() { user_id }: UserParam,
     @Query() query: GetUserChatsQuery,
   ) {
     if (user_id != user.id) throw new ForbiddenException();
@@ -45,8 +45,8 @@ export class UserChatsController {
 
   @Get(':chat_id')
   async getOneChat(
-    @Session('user') user: SessionUser,
-    @Param() { user_id, chat_id }: UserChatIdentificationParam,
+    @Session('user') user: SessionUserData,
+    @Param() { user_id, chat_id }: UserChatParam,
   ) {
     if (user_id != user.id) throw new ForbiddenException();
 
@@ -55,12 +55,12 @@ export class UserChatsController {
 
   @Patch(':chat_id')
   async updateChat(
-    @Session('user') user: SessionUser,
-    @Param() { user_id, chat_id }: UserChatIdentificationParam,
-    @Body() { payload }: UpdateUserChatReqBody,
+    @Session('user') user: SessionUserData,
+    @Param() { user_id, chat_id }: UserChatParam,
+    @Body() dto: UpdateUserChatDto,
   ) {
     if (user_id != user.id) throw new ForbiddenException();
 
-    return this.service.updateUserChat(user_id, chat_id, payload);
+    return this.service.updateUserChat(user_id, chat_id, dto);
   }
 }

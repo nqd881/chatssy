@@ -2,7 +2,7 @@ import { modelOptions, prop } from '@typegoose/typegoose';
 import { Photo } from '../../photo.model';
 
 @modelOptions({})
-export class MessagePhotoContent {
+export class PhotoContent {
   @prop({ required: true })
   photo: Photo;
 

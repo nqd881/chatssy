@@ -11,7 +11,6 @@ import { applyDefault, timestampsSchemaConfig } from '../utils';
 import { UserAuth } from './user-auth.model';
 import { UserChat } from './user-chat.model';
 import { UserEmail } from './user-email.model';
-import { UserPhone } from './user-phone.model';
 import { UserProfile } from './user-profile.model';
 import { UserSetting } from './user-setting';
 
@@ -40,9 +39,6 @@ export class User {
   @prop({ default: applyDefault })
   email: UserEmail;
 
-  @prop({ default: applyDefault })
-  phone: UserPhone;
-
   @prop({ default: null })
   photo: Photo;
 
@@ -60,6 +56,15 @@ export class User {
 
   @prop({ type: [UserChat], default: [] }, PropType.ARRAY)
   chats: mongoose.Types.Array<UserChat>;
+
+  getEmail(this: UserDoc) {
+    return this.email.address;
+  }
+
+  getName(this: UserDoc) {
+    const { first_name, last_name } = this.profile;
+    return `${first_name} ${last_name}`;
+  }
 }
 
 export type UserDoc = DocumentType<User>;

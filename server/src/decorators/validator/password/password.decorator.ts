@@ -2,9 +2,11 @@ import {
   registerDecorator,
   ValidationArguments,
   ValidationOptions,
+  ValidatorConstraint,
+  ValidatorConstraintInterface,
 } from 'class-validator';
 import { checkPassword, ConditionName } from './check-password';
-import { CheckPasswordOptions } from './type';
+import { CheckPasswordOptions, CheckPasswordResult } from './type';
 import _ from 'lodash';
 
 export type PasswordOptionsBase<T extends string> = {
@@ -73,21 +75,37 @@ export const Password = (
 
   return (target: Object, propertyName: string) => {
     registerDecorator({
-      name: 'complexPassword',
       target: target.constructor,
       propertyName,
       options: validationOptions,
-      validator: {
-        validate(value: any, args: ValidationArguments) {
-          const { passed, info } = checkPassword(value, checkPasswordOptions);
-          console.log(info);
-          return passed;
-        },
-
-        defaultMessage(args: ValidationArguments) {
-          return 'Invalid password';
-        },
-      },
+      constraints: [checkPasswordOptions],
+      validator: PasswordConstraint,
     });
   };
 };
+
+@ValidatorConstraint({ name: 'Password' })
+export class PasswordConstraint implements ValidatorConstraintInterface {
+  private info: CheckPasswordResult['info'];
+
+  validate(value: any, args: ValidationArguments) {
+    const [checkPasswordOptions] = args.constraints;
+    const { passed, info } = checkPassword(value, checkPasswordOptions);
+
+    this.info = info;
+
+    return passed;
+  }
+
+  defaultMessage(args: ValidationArguments) {
+    return this.buildMessage();
+  }
+
+  private buildMessage(): string {
+    const errors = _.flatten(
+      Object.values(this.info).map((result) => result.errorMap),
+    );
+
+    return errors.join(`\n`);
+  }
+}

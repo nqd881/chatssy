@@ -67,12 +67,11 @@ export const checkPassword = (
 
     if (result.passedCount >= result.expectedCount) result.state = 'successful';
 
-    result.message = `${result.name} group errors: [ Passed ${
-      result.passedCount
-    }/${result.total} conditions. The expected number is ${
-      result.expectedCount
-    } ].   
-${result.errorMap.map((error) => ` - ${error}.`).join('\n')}`;
+    result.message = `[ Passed ${result.passedCount}/${
+      result.total
+    } conditions. Expect ${result.expectedCount} ]\n${result.errorMap
+      .map((error) => ` - ${error}`)
+      .join('\n')}`;
 
     return result;
   };

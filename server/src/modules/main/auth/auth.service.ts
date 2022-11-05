@@ -1,84 +1,73 @@
-import { EmailService } from '@modules/extra/email';
 import { UserDoc } from '@modules/extra/models/user/user.model';
-import { OtpService } from '@modules/extra/otp';
-import { REDIS } from '@modules/extra/redis-cache';
-import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ChatssyReq, ChatssyRes } from '@types';
+import { Request, Response } from 'express';
 import { OAuth2Client } from 'google-auth-library';
-import * as IORedis from 'ioredis';
 import { Env } from 'src/env/types';
 import { WrongCredentials } from 'src/exceptions/WrongCredentials.exception';
 import { UserAuthService } from '../user/modules/user-auth/user-auth.service';
 import { UserRegistrationService } from '../user/modules/user-registration/user-registration.service';
 import { UserSearchingService } from '../user/modules/user-searching/user-searching.service';
 import { LoginData } from './data-types';
-import { CsrfService } from './services/csrf.service';
+import { SessionService } from '../session';
 
 @Injectable()
 export class AuthService {
-  @Inject()
-  envConfig: ConfigService;
+  constructor(
+    private envConfig: ConfigService,
+    private userSearchingService: UserSearchingService,
+    private userAuthService: UserAuthService,
+    private userRegistrationService: UserRegistrationService,
+    private sessionService: SessionService,
+  ) {}
 
-  @Inject(REDIS)
-  redis: IORedis.Redis;
+  private async _login(req: Request, res: Response, user: UserDoc) {
+    const { ip } = req;
+    const { device, os, browser } = req.useragent;
 
-  @Inject()
-  csrfService: CsrfService;
+    await this.sessionService.create(req, res, user, {
+      user_id: user.id,
+      device,
+      os,
+      browser,
+      ip,
+      time: this.envConfig.get(Env.SESSION_MAX_AGE),
+    });
 
-  @Inject()
-  emailService: EmailService;
-
-  @Inject()
-  otpService: OtpService;
-
-  @Inject()
-  userSearchingService: UserSearchingService;
-
-  @Inject()
-  userRegistrationService: UserRegistrationService;
-
-  @Inject()
-  userAuthService: UserAuthService;
-
-  constructor() {}
-
-  private async coreLogin(req: ChatssyReq, res: ChatssyRes, user: UserDoc) {
-    this.createSession(req, user);
-    res.cookie('CSRF-Token', this.csrfService.create());
     return res.json({ data: user });
   }
 
-  async login(req: ChatssyReq, res: ChatssyRes, data: LoginData) {
+  async login(req: Request, res: Response, data: LoginData) {
     const user = await this.userSearchingService.findByUsername(data.username);
 
     if (!user) throw WrongCredentials;
     if (!user.active) throw WrongCredentials;
 
-    if (
-      !this.userAuthService.comparePassword(user.auth.password, data.password)
-    )
-      throw WrongCredentials;
+    const passwordValid = await this.userAuthService.checkPassword(
+      user,
+      data.password,
+    );
+    if (!passwordValid) throw WrongCredentials;
 
-    return this.coreLogin(req, res, user);
+    return this._login(req, res, user);
   }
 
-  async loginWithGoogle(req: ChatssyReq, res: ChatssyRes, token: string) {
-    const payload = await this.getGooglePayload(token);
+  async loginWithGoogle(req: Request, res: Response, token: string) {
+    const ggPayload = await this.getGooglePayload(token);
 
-    let user = await this.userSearchingService.findByEmail(payload.email);
+    let user = await this.userSearchingService.findByEmail(ggPayload.email);
 
     if (!user) {
-      user = await this.userRegistrationService.registerWithEmail({
-        first_name: payload.given_name,
-        last_name: payload.family_name,
-        email: payload.email,
+      user = await this.userRegistrationService.register({
+        first_name: ggPayload.given_name,
+        last_name: ggPayload.family_name,
+        email: ggPayload.email,
         birth_date: null,
         ...this.userRegistrationService.generateRandomCredentials(),
       });
     }
 
-    return this.coreLogin(req, res, user);
+    return this._login(req, res, user);
   }
 
   async getGooglePayload(token: string) {
@@ -97,21 +86,13 @@ export class AuthService {
     }
   }
 
-  async detectMe(req: ChatssyReq) {
+  async detectMe(req: Request) {
     return this.userSearchingService.findById(req.session.user.id);
   }
 
-  logout(request: ChatssyReq) {
-    request.session.destroy(() => {});
-  }
+  async logout(req: Request, res: Response) {
+    await this.sessionService.destroy(req, res);
 
-  createSession(req: ChatssyReq, data: any) {
-    req.session.user = {
-      id: data.id,
-      name: data.name,
-      email: data.email,
-      role: data.role,
-      visit: 1,
-    };
+    return res.json({ data: true });
   }
 }

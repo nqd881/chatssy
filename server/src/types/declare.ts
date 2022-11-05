@@ -1,18 +1,14 @@
-import { UserTypes } from '@modules/extra/models/user/user.model';
+import { SessionCacheData } from '@modules/main/session';
+import { IResult } from 'ua-parser-js';
 
 export function autoDeclare() {}
 
 declare module 'express-session' {
-  export type SessionUser = {
-    id: string;
-    name: string;
-    email: string;
-    role: UserTypes;
-    visit: number;
-  };
+  export interface SessionData extends SessionCacheData {}
+}
 
-  interface SessionData {
-    user: SessionUser;
-    csrfToken: string;
+declare module 'express-serve-static-core' {
+  interface Request {
+    useragent: IResult;
   }
 }

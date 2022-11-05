@@ -1,4 +1,6 @@
 import { modelOptions, prop } from '@typegoose/typegoose';
+import { Address } from '../address.model';
+import { applyDefault } from '../utils';
 
 @modelOptions({
   schemaOptions: {
@@ -14,4 +16,7 @@ export class UserProfile {
 
   @prop({ default: null })
   birth_date: Date;
+
+  @prop({ default: applyDefault })
+  address: Address;
 }

@@ -6,6 +6,7 @@ import {
   IsString,
   validateSync,
 } from 'class-validator';
+import { IsStringOrNumber } from 'src/decorators/validator/is-string-or-number.decorator';
 import { Env } from './types';
 
 export enum NodeEnvironment {
@@ -20,7 +21,10 @@ export class ChatssyEnv {
   [Env.NODE_ENV]: NodeEnvironment;
 
   @IsString()
-  [Env.COOKIE_SECRET]: string;
+  [Env.SESSION_SECRET]: string;
+
+  @IsStringOrNumber()
+  [Env.SESSION_MAX_AGE]: string | number;
 
   @IsString()
   [Env.CSRF_TOKEN_SECRET]: string;
@@ -34,8 +38,8 @@ export class ChatssyEnv {
   @IsNumber()
   [Env.REDIS_PORT]: number;
 
-  @IsString()
-  [Env.PASSWORD_SALT_ROUNDS]: string;
+  @IsNumber()
+  [Env.PASSWORD_SALT_ROUNDS]: number;
 
   @IsString()
   [Env.GOOGLE_CLIENT_ID]: string;

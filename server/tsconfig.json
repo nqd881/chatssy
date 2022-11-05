@@ -24,10 +24,8 @@
       "@pipes": ["src/pipes/index"],
       "@types": ["src/types/index"],
       "@utils": ["src/utils/index"],
-      "@utils/*": ["src/utils/*"],
-      "@schemas": ["src/modules/extra/database/schemas/index"],
-      "@schemas/*": ["src/modules/extra/database/schemas/*"]
+      "@utils/*": ["src/utils/*"]
     }
   },
-  "include": ["src/**/**/**/**/*"]
+  "include": ["src/**/*"]
 }

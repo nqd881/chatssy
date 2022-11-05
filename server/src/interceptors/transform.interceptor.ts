@@ -4,17 +4,11 @@ import {
   Injectable,
   NestInterceptor,
 } from '@nestjs/common';
-import { map, Observable } from 'rxjs';
-import { ChatssyResBody } from 'src/types';
+import { map } from 'rxjs';
 
 @Injectable()
-export class TransformInterceptor<T>
-  implements NestInterceptor<T, ChatssyResBody<T>>
-{
-  intercept(
-    context: ExecutionContext,
-    next: CallHandler,
-  ): Observable<ChatssyResBody<T>> {
+export class TransformInterceptor<T> implements NestInterceptor<T> {
+  intercept(context: ExecutionContext, next: CallHandler) {
     return next.handle().pipe(map((data) => ({ data })));
   }
 }

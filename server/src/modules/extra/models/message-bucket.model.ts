@@ -2,13 +2,13 @@ import {
   DocumentType,
   modelOptions,
   prop,
-  PropType,
   Ref,
   ReturnModelType,
+  Severity,
 } from '@typegoose/typegoose';
 import mongoose from 'mongoose';
 import { Chat } from './chat.model';
-import { Message } from './message/message.model';
+import { Message, MessageDoc } from './message';
 
 @modelOptions({
   schemaOptions: {
@@ -20,22 +20,33 @@ import { Message } from './message/message.model';
       },
     },
   },
+  options: {
+    allowMixed: Severity.ALLOW,
+  },
 })
 export class MessageBucket {
-  @prop({ ref: () => Chat, required: true })
+  @prop({ ref: () => Chat, required: true, index: true })
   chat_id: Ref<Chat>;
 
-  @prop()
+  @prop({ required: true })
+  is_last_bucket: boolean;
+
+  @prop({ ref: () => MessageBucket, default: null })
+  prev_bucket_id: Ref<MessageBucket>;
+
+  @prop({ required: true })
   order: number;
 
   @prop({ default: 0 })
   messages_count: number;
 
-  @prop({ type: () => [Message], default: [] }, PropType.ARRAY)
-  messages: mongoose.Types.Array<Message>;
+  @prop({ default: [] })
+  messages: mongoose.Types.DocumentArray<Message>;
+  // messages: mongoose.Types.Array<MessageDoc>;
 
   @prop({ default: null })
   last_message: Message;
+  // last_message: MessageDoc;
 }
 
 export type MessageBucketDoc = DocumentType<MessageBucket>;

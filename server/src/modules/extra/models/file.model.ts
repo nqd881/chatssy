@@ -2,23 +2,19 @@ import {
   DocumentType,
   modelOptions,
   prop,
+  Ref,
   ReturnModelType,
 } from '@typegoose/typegoose';
+import { User } from './user/user.model';
 
 @modelOptions({})
-export class LocalFile {
-  @prop({ default: null })
-  path: string;
+export class File {
+  @prop({ ref: () => User, required: true })
+  owner_id: Ref<User>;
 
-  @prop({ default: false })
-  is_downloading_active: boolean;
+  @prop({ required: true })
+  size: number;
 
-  @prop({ default: false })
-  is_downloading_completed: boolean;
-}
-
-@modelOptions({})
-export class RemoteFile {
   @prop({ default: null })
   url: string;
 
@@ -27,18 +23,6 @@ export class RemoteFile {
 
   @prop({ default: false })
   is_uploading_completed: boolean;
-}
-
-@modelOptions({})
-export class File {
-  @prop({ required: true })
-  size: number;
-
-  @prop({ default: null })
-  local: LocalFile;
-
-  @prop({ default: null })
-  remote: RemoteFile;
 }
 
 export type FileDoc = DocumentType<File>;
