@@ -4,6 +4,7 @@ import { NestgooseModule } from 'nestgoose';
 import { MessageModule } from '../message';
 import { UserChatsModule } from '../user/modules/user-chats/user-chats.module';
 import { ChatController } from './chat.controller';
+import { ChatGateway } from './chat.gateway';
 import { ChatService } from './chat.service';
 import { ChatSearchingModule } from './modules/chat-searching/chat-searching.module';
 
@@ -15,6 +16,6 @@ import { ChatSearchingModule } from './modules/chat-searching/chat-searching.mod
     MessageModule,
   ],
   controllers: [ChatController],
-  providers: [ChatService],
+  providers: [ChatService, ChatGateway],
 })
 export class ChatModule {}

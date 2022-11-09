@@ -5,6 +5,10 @@ import {AuthInput} from "./AuthInput";
 import AuthLink from "./AuthLink";
 import {AuthSubmitButton} from "./AuthSubmitButton";
 import styles from "./Content.module.scss";
+import {useMutation} from "@tanstack/react-query";
+import {loginApi} from "@apis/auth/login";
+import {useRouter} from "next/router";
+import {useAppStore} from "@contexts/AppStoreContext";
 
 const cl = sassClasses(styles);
 
@@ -18,13 +22,22 @@ const ThirdPartyLogin = () => {
 };
 
 export const AuthLogin = () => {
+  const router = useRouter();
+
+  const login = useMutation({
+    mutationFn: loginApi,
+    onSuccess: (result) => {
+      router.push("/apps/chat");
+    },
+  });
+
   const formConfig: FormikConfig<LoginForm> = {
     initialValues: {
       username: "",
       password: "",
     },
     onSubmit: (values) => {
-      console.log(values);
+      login.mutate(values);
     },
   };
 

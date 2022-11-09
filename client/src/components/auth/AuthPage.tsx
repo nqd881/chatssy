@@ -1,6 +1,9 @@
-import {NextPage} from "next";
-import React, {ReactElement} from "react";
+import {detectMeApi} from "@apis/auth/detect-me";
+import {useQuery} from "@tanstack/react-query";
 import {sassClasses} from "@utils";
+import {NextPage} from "next";
+import {useRouter} from "next/router";
+import {ReactElement} from "react";
 import styles from "./AuthPage.module.scss";
 
 const cl = sassClasses(styles);
@@ -11,6 +14,22 @@ interface AuthPageProps {
 }
 
 export const AuthPage: NextPage<AuthPageProps> = ({title, content}) => {
+  const router = useRouter();
+
+  const detectMe = useQuery({
+    queryKey: ["me"],
+    queryFn: detectMeApi,
+    staleTime: Infinity,
+  });
+
+  if (detectMe.isLoading) {
+    return <div>Loading me data</div>;
+  }
+
+  if ((detectMe.data as any)._id) {
+    router.push("/apps/chat");
+  }
+
   return (
     <div className={cl("AuthPage")}>
       <div className={cl("box")}>

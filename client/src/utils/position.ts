@@ -6,13 +6,7 @@ export interface MousePosition {
 }
 
 export class Position {
-  x: number;
-  y: number;
-
-  constructor(x: number, y: number) {
-    this.x = x;
-    this.y = y;
-  }
+  constructor(public x: number, public y: number) {}
 
   minus(b: Position) {
     return new Position(this.x - b.x, this.y - b.y);

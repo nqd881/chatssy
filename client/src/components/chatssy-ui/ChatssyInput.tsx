@@ -32,7 +32,7 @@ export const ChatssyInput: React.FC<ChakraInputProps> = (props) => {
     <InputGroup>
       <Input
         margin={1}
-        pr='4.5rem'
+        pr={isPasswordField ? "4.5rem" : "auto"}
         {...props}
         type={isPasswordField && showPassword ? "text" : props?.type || "text"}
       />

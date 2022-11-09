@@ -6,8 +6,8 @@ import { Session } from 'src/decorators/session.decorator';
 import { ApiQueries } from 'src/decorators/swagger/api-queries.decorator';
 import { CookieAuthGuard, TfaGuard } from 'src/guards';
 import { PasswordChangeDto } from './dto/password-change';
-import { PasswordReset1Dto } from './dto/password-reset-1';
-import { PasswordReset2Dto, PasswordReset2Query } from './dto/password-reset-2';
+import { PasswordForgotDto } from './dto/password-forgot';
+import { PasswordResetDto, PasswordResetQuery } from './dto/password-reset';
 import { UserAuthService } from './user-auth.service';
 
 @ApiTags(ChatssyApiTags.User)
@@ -15,19 +15,19 @@ import { UserAuthService } from './user-auth.service';
 export class UserAuthController {
   constructor(private service: UserAuthService) {}
 
-  @Post('password_reset/step1')
-  async resetPasswordStep1(@Body() dto: PasswordReset1Dto) {
-    return this.service.resetPasswordStep1(dto.email);
+  @Post('password_forgot')
+  async forgotPassword(@Body() dto: PasswordForgotDto) {
+    return this.service.forgotPassword(dto.email);
   }
 
-  @Post('password_reset/step2')
-  @ApiQueries(PasswordReset2Query)
-  async resetPasswordStep2(
-    @Query() { user_id, token }: PasswordReset2Query,
+  @Post('password_reset')
+  @ApiQueries(PasswordResetQuery)
+  async resetPassword(
+    @Query() { user_id, token }: PasswordResetQuery,
     @Body()
-    dto: PasswordReset2Dto,
+    dto: PasswordResetDto,
   ) {
-    return this.service.resetPasswordStep2(user_id, token, dto.password);
+    return this.service.resetPassword(user_id, token, dto.password);
   }
 
   @Get('password_change')

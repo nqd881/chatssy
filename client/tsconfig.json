@@ -9,8 +9,10 @@
       "@utils/*": ["src/utils/*"],
       "@hooks": ["src/hooks/index"],
       "@hooks/*": ["src/hooks/*"],
-      "@types": ["src/types/index"],
-      "@types/*": ["src/types/*"]
+      "@type": ["src/type/index"],
+      "@type/*": ["src/type/*"],
+      "@apis": ["src/apis/index"],
+      "@apis/*": ["src/apis/*"]
     },
     "target": "es6",
     "lib": ["dom", "dom.iterable", "esnext"],
@@ -28,7 +30,8 @@
     "incremental": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "strictPropertyInitialization": false
+    "strictPropertyInitialization": false,
+    "strictNullChecks": false
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/**/*.ts"],
   "exclude": ["node_modules"]

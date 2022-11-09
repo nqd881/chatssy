@@ -2,7 +2,7 @@ import {Formik, FormikConfig} from "formik";
 import {useState} from "react";
 import {sassClasses} from "@utils";
 import {AuthInput} from "./AuthInput";
-import {AuthNotification} from "./AuthNotfication";
+import {AuthNotification} from "./AuthNotification";
 import {AuthSubmitButton} from "./AuthSubmitButton";
 import styles from "./Content.module.scss";
 

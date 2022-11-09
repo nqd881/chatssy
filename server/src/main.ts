@@ -8,7 +8,6 @@ import {
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
-import { TransformInterceptor } from './interceptors/transform.interceptor';
 import { autoDeclare } from './types/declare';
 
 autoDeclare();
@@ -31,6 +30,7 @@ function bootstrapSwagger(app: INestApplication) {
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.enableCors();
 
   bootstrapSwagger(app);
 
@@ -38,7 +38,6 @@ async function bootstrap() {
     type: VersioningType.URI,
     defaultVersion: [VERSION_NEUTRAL, '1'],
   });
-  app.useGlobalInterceptors(new TransformInterceptor());
 
   app.use(cookieParser());
   app.useGlobalPipes(...globalPipes);

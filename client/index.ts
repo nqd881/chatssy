@@ -22,7 +22,7 @@ async function start() {
     await bootstrapNextApp(expressApp);
 
     expressApp.listen(PORT, () => {
-      console.log("Client server is running on port 3000 !!!");
+      console.log(`Client server is running on port ${PORT} !!!`);
     });
   } catch (err) {}
 }

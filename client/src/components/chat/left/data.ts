@@ -83,40 +83,42 @@ export const allChatrooms: ChatroomGroupProps = {
       avatar:
         "https://lh3.googleusercontent.com/ogw/ADea4I4iALiN2OeOUVwIE0oATcKAQWtryI9rpwUnHKZp=s96-c-mo",
     },
-    // {
-    //   id: 8,
-    //   name: "Fuck you",
-    //   last_message: {content: "HAhahah", time: "21:09"},
-    //   avatar:
-    //     "https://lh3.googleusercontent.com/ogw/ADea4I4iALiN2OeOUVwIE0oATcKAQWtryI9rpwUnHKZp=s96-c-mo",
-    // },
-    // {
-    //   id: 9,
-    //   name: "Fuck you",
-    //   last_message: {content: "HAhahah", time: "21:09"},
-    //   avatar:
-    //     "https://lh3.googleusercontent.com/ogw/ADea4I4iALiN2OeOUVwIE0oATcKAQWtryI9rpwUnHKZp=s96-c-mo",
-    // },
-    // {
-    //   id: 10,
-    //   name: "Fuck you",
-    //   last_message: {content: "HAhahah", time: "21:09"},
-    //   avatar:
-    //     "https://lh3.googleusercontent.com/ogw/ADea4I4iALiN2OeOUVwIE0oATcKAQWtryI9rpwUnHKZp=s96-c-mo",
-    // },
-    // {
-    //   id: 11,
-    //   name: "Fuck you",
-    //   last_message: {content: "HAhahah", time: "21:09"},
-    //   avatar:
-    //     "https://lh3.googleusercontent.com/ogw/ADea4I4iALiN2OeOUVwIE0oATcKAQWtryI9rpwUnHKZp=s96-c-mo",
-    // },
-    // {
-    //   id: 12,
-    //   name: "Fuck you",
-    //   last_message: {content: "HAhahah", time: "21:09"},
-    //   avatar:
-    //     "https://lh3.googleusercontent.com/ogw/ADea4I4iALiN2OeOUVwIE0oATcKAQWtryI9rpwUnHKZp=s96-c-mo",
-    // },
+    {
+      id: 8,
+      name: "Fuck you",
+      last_message: {content: "HAhahah", time: "21:09"},
+      avatar:
+        "https://lh3.googleusercontent.com/ogw/ADea4I4iALiN2OeOUVwIE0oATcKAQWtryI9rpwUnHKZp=s96-c-mo",
+    },
+    {
+      id: 9,
+      name: "Fuck you",
+      last_message: {content: "HAhahah", time: "21:09"},
+      avatar:
+        "https://lh3.googleusercontent.com/ogw/ADea4I4iALiN2OeOUVwIE0oATcKAQWtryI9rpwUnHKZp=s96-c-mo",
+    },
+    {
+      id: 10,
+      name: "Fuck you",
+      last_message: {content: "HAhahah", time: "21:09"},
+      avatar:
+        "https://lh3.googleusercontent.com/ogw/ADea4I4iALiN2OeOUVwIE0oATcKAQWtryI9rpwUnHKZp=s96-c-mo",
+    },
+    {
+      id: 11,
+      name: "Fuck you",
+      last_message: {content: "HAhahah", time: "21:09"},
+      avatar:
+        "https://lh3.googleusercontent.com/ogw/ADea4I4iALiN2OeOUVwIE0oATcKAQWtryI9rpwUnHKZp=s96-c-mo",
+    },
+    {
+      id: 12,
+      name: "Fuck you",
+      last_message: {content: "HAhahah", time: "21:09"},
+      avatar:
+        "https://lh3.googleusercontent.com/ogw/ADea4I4iALiN2OeOUVwIE0oATcKAQWtryI9rpwUnHKZp=s96-c-mo",
+    },
   ],
 };
+
+export const data = allChatrooms.data;

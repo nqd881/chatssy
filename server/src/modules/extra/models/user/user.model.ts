@@ -21,15 +21,13 @@ export enum UserTypes {
 
 @modelOptions({
   schemaOptions: {
+    timestamps: timestampsSchemaConfig,
     toJSON: {
       transform(doc, ret) {
-        ret.id = ret._id;
-        delete ret._id;
-        delete ret.__v;
         delete ret.auth;
+        return ret;
       },
     },
-    timestamps: timestampsSchemaConfig,
   },
 })
 export class User {

@@ -37,17 +37,7 @@ export class ChatMember {
   seen: mongoose.Types.ObjectId;
 }
 
-@modelOptions({
-  schemaOptions: {
-    toJSON: {
-      transform(doc, ret) {
-        ret.id = ret._id;
-        delete ret._id;
-        delete ret.__v;
-      },
-    },
-  },
-})
+@modelOptions({})
 export class Chat {
   @prop({ required: true })
   title: string;

@@ -47,10 +47,6 @@ export class MessageService {
 
   async newMessage(chatId: string, data: AddMessageData) {
     const bucket = await this.bucketModel.findOneAndUpdate(
-      // {
-      //   ...this._lastBucketQuery(chatId),
-      //   ...this._canBeUpdatedBucketQuery(),
-      // },
       _.merge(this._lastBucketQuery(chatId), this._canBeUpdatedBucketQuery()),
       [
         {
@@ -110,6 +106,8 @@ export class MessageService {
   async findMessage(bucketId: string, messageId: string) {
     const bucket = await this.bucketModel.findById(bucketId);
 
-    return bucket.messages.find((message) => message.id === messageId);
+    return bucket.messages.find(
+      (message) => message._id.toString() === messageId,
+    );
   }
 }

@@ -2,9 +2,11 @@ import {Formik, FormikConfig} from "formik";
 import {useState} from "react";
 import {sassClasses} from "@utils";
 import {AuthInput} from "./AuthInput";
-import {AuthNotification} from "./AuthNotfication";
+import {AuthNotification} from "./AuthNotification";
 import {AuthSubmitButton} from "./AuthSubmitButton";
 import styles from "./Content.module.scss";
+import {useMutation} from "@tanstack/react-query";
+import {passwordForgotApi, PasswordForgotData} from "@apis/auth/reset-password";
 
 const cl = sassClasses(styles);
 
@@ -13,9 +15,7 @@ enum ForgotPasswordSide {
   NOTIFICATION,
 }
 
-interface ForgotPasswordForm {
-  email: string;
-}
+interface ForgotPasswordForm extends PasswordForgotData {}
 
 interface AuthForgotPasswordFormProps {
   changeSide: (state: ForgotPasswordSide) => any;
@@ -24,12 +24,19 @@ interface AuthForgotPasswordFormProps {
 const AuthForgotPasswordForm: React.FC<AuthForgotPasswordFormProps> = ({
   changeSide,
 }) => {
+  const forgotPassword = useMutation({
+    mutationFn: passwordForgotApi,
+    onSuccess: () => {
+      changeSide(ForgotPasswordSide.NOTIFICATION);
+    },
+  });
+
   const formConfig: FormikConfig<ForgotPasswordForm> = {
     initialValues: {
       email: "",
     },
     onSubmit: (values) => {
-      changeSide(ForgotPasswordSide.NOTIFICATION);
+      forgotPassword.mutate(values);
     },
   };
 

@@ -34,7 +34,7 @@ export class AuthService {
       time: this.envConfig.get(Env.SESSION_MAX_AGE),
     });
 
-    return res.json({ data: user });
+    return res.json(user);
   }
 
   async login(req: Request, res: Response, data: LoginData) {

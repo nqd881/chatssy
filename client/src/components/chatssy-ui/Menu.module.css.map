@@ -1,9 +1,0 @@
-{
-    "version": 3,
-    "mappings": "AAAA,AAAA,KAAK,CAAC;EACJ,aAAa,EAAE,GAAG;EAClB,OAAO,EAAE,MAAM;EACf,SAAS,EAAE,KAAK;EAChB,gBAAgB,EAAO,yBAAO;EAC9B,eAAe,EAAE,UAAU;EAC3B,OAAO,EAAE,EAAE;CACZ;;AAED,AAAA,OAAO,CAAC;EACN,UAAU,EAAE,CAAC,CAAC,CAAC,CAAC,IAAI,CAAM,mBAAI;CAC/B",
-    "sources": [
-        "Menu.module.scss"
-    ],
-    "names": [],
-    "file": "Menu.module.css"
-}

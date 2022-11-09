@@ -17,3 +17,6 @@ spec:
           image: loserforever/chatssy-client-dev
           ports:
             - containerPort: 3000
+          env:
+            - name: PORT
+              value: "3000"

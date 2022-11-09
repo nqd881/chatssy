@@ -27,9 +27,6 @@ export class ChatssyEnv {
   [Env.SESSION_MAX_AGE]: string | number;
 
   @IsString()
-  [Env.CSRF_TOKEN_SECRET]: string;
-
-  @IsString()
   [Env.MONGO_URI]: string;
 
   @IsString()
@@ -52,12 +49,6 @@ export class ChatssyEnv {
 
   @IsString()
   [Env.GOOGLE_MAILER_REFRESH_TOKEN]: string;
-
-  @IsString()
-  [Env.OTP_SALT]: string;
-
-  @IsString()
-  [Env.TOKEN_SECRET]: string;
 }
 
 export const validate = (config: Record<string, unknown>) => {

@@ -87,7 +87,7 @@ export class UserAuthService {
     });
   }
 
-  async resetPasswordStep1(email: string) {
+  async forgotPassword(email: string) {
     const user = await this.userModel.findOne({ email });
     if (!user) return;
 
@@ -97,7 +97,7 @@ export class UserAuthService {
     return true;
   }
 
-  async resetPasswordStep2(userId: string, code: string, password: string) {
+  async resetPassword(userId: string, code: string, password: string) {
     const tokenValid = await this.tokenService.verify(code);
 
     if (!tokenValid) return null;

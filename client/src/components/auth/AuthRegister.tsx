@@ -4,9 +4,11 @@ import React, {useState} from "react";
 import {sassClasses} from "@utils";
 import {AuthInput} from "./AuthInput";
 import AuthLink from "./AuthLink";
-import {AuthNotification} from "./AuthNotfication";
+import {AuthNotification} from "./AuthNotification";
 import {AuthSubmitButton} from "./AuthSubmitButton";
 import styles from "./Content.module.scss";
+import {useMutation} from "@tanstack/react-query";
+import {RegisterApiData, registerApi} from "@apis/auth/register";
 
 const cl = sassClasses(styles);
 
@@ -15,29 +17,31 @@ enum RegisterSide {
   NOTIFICATION,
 }
 
-interface RegisterForm {
-  username: string;
-  password: string;
-  name: string;
-  email: string;
-  phone?: string;
-}
+interface RegisterForm extends RegisterApiData {}
 
 type AuthRegisterFormProps = {
   changeSide: (state: RegisterSide) => any;
 };
 
 const AuthRegisterForm: React.FC<AuthRegisterFormProps> = ({changeSide}) => {
+  const register = useMutation({
+    mutationFn: registerApi,
+    onSuccess: (data, variables, context) => {
+      changeSide(RegisterSide.NOTIFICATION);
+    },
+  });
+
+  // miss birth date
   const formConfig: FormikConfig<RegisterForm> = {
     initialValues: {
       username: "",
       password: "",
-      name: "",
+      firstName: "",
+      lastName: "",
       email: "",
-      phone: "",
     },
     onSubmit: (values) => {
-      changeSide(RegisterSide.NOTIFICATION);
+      register.mutate(values);
     },
   };
 
@@ -45,6 +49,8 @@ const AuthRegisterForm: React.FC<AuthRegisterFormProps> = ({changeSide}) => {
     <Formik {...formConfig}>
       {(form) => (
         <form className={cl("root")} onSubmit={form.handleSubmit}>
+          <AuthInput placeholder='First name' name='firstName' required />
+          <AuthInput placeholder='Last name' name='lastName' required />
           <AuthInput placeholder='Username' name='username' required />
           <AuthInput
             placeholder='Password'
@@ -52,9 +58,7 @@ const AuthRegisterForm: React.FC<AuthRegisterFormProps> = ({changeSide}) => {
             name='password'
             required
           />
-          <AuthInput placeholder='Name' name='name' required />
           <AuthInput placeholder='Email' type='email' name='email' required />
-          <AuthInput placeholder='Phone' name='phone' />
 
           <Text fontSize='sm' m={2}>
             {`By signing up, you confirm that you've read and accepted our User

@@ -1,9 +1,0 @@
-{
-    "version": 3,
-    "mappings": "AAAA,AAAA,aAAa,CAAC;EACZ,KAAK,EAAE,IAAI;EACX,MAAM,EAAE,gBAAgB;EACxB,SAAS,EAAE,KAAK;CACjB",
-    "sources": [
-        "MessageGroup.module.scss"
-    ],
-    "names": [],
-    "file": "MessageGroup.module.css"
-}

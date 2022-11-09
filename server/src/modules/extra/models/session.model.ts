@@ -78,7 +78,7 @@ export class Session {
   @prop({ required: true })
   expiration_date: number;
 
-  @prop({ required: true })
+  @prop({ default: null })
   ip: string;
 }
 

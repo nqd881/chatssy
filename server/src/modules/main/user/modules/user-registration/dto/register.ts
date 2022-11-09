@@ -1,5 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsDateString, IsEmail, IsString } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsDateString, IsEmail, IsOptional, IsString } from 'class-validator';
 import { Password } from 'src/decorators/validator/password';
 
 export class RegisterDto {
@@ -10,10 +10,6 @@ export class RegisterDto {
   @ApiProperty()
   @IsString()
   last_name: string;
-
-  @ApiProperty()
-  @IsDateString()
-  birth_date: Date;
 
   @ApiProperty()
   @IsString()
@@ -27,4 +23,9 @@ export class RegisterDto {
   @ApiProperty()
   @IsEmail()
   email: string;
+
+  @ApiPropertyOptional()
+  @IsDateString()
+  @IsOptional()
+  birth_date: Date;
 }

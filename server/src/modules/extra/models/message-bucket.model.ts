@@ -8,7 +8,7 @@ import {
 } from '@typegoose/typegoose';
 import mongoose from 'mongoose';
 import { Chat } from './chat.model';
-import { Message, MessageDoc } from './message';
+import { Message, MessageDoc, MessageBase } from './message';
 
 @modelOptions({
   schemaOptions: {
@@ -41,12 +41,10 @@ export class MessageBucket {
   messages_count: number;
 
   @prop({ default: [] })
-  messages: mongoose.Types.DocumentArray<Message>;
-  // messages: mongoose.Types.Array<MessageDoc>;
+  messages: mongoose.Types.Array<Message>;
 
   @prop({ default: null })
   last_message: Message;
-  // last_message: MessageDoc;
 }
 
 export type MessageBucketDoc = DocumentType<MessageBucket>;
