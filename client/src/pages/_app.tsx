@@ -1,10 +1,9 @@
-import "@fontsource/montserrat";
 import {ChakraProvider} from "@chakra-ui/react";
+import "@fontsource/montserrat";
+import {Hydrate, QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import {AppPropsWithLayout} from "@type";
-import theme from "src/styles/theme";
-import {QueryClientProvider, QueryClient, Hydrate} from "@tanstack/react-query";
 import {useState} from "react";
-import {AppStoreProvider} from "@contexts/AppStoreContext";
+import theme from "src/styles/theme";
 
 function MyApp({Component, pageProps}: AppPropsWithLayout) {
   const [queryClient] = useState(() => new QueryClient());
@@ -12,7 +11,6 @@ function MyApp({Component, pageProps}: AppPropsWithLayout) {
   const getLayout = Component.getLayout || ((page) => page);
 
   return (
-    // <AppStoreProvider>
     <QueryClientProvider client={queryClient}>
       <Hydrate state={pageProps.dehydratedState}>
         <ChakraProvider resetCSS={true} theme={theme}>
@@ -20,7 +18,6 @@ function MyApp({Component, pageProps}: AppPropsWithLayout) {
         </ChakraProvider>
       </Hydrate>
     </QueryClientProvider>
-    // </AppStoreProvider>
   );
 }
 

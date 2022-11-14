@@ -7,20 +7,6 @@ export const ApiClient = axios.create({
   xsrfHeaderName: "X-CSRF-TOKEN",
 });
 
-ApiClient.interceptors.request.use(
-  function (config) {
-    return config;
-  },
-  function (error) {
-    return error.message;
-  }
-);
-
-ApiClient.interceptors.response.use(
-  function (response) {
-    return response.data;
-  },
-  function (error) {
-    return error.message;
-  }
-);
+ApiClient.interceptors.response.use(function (response) {
+  return response.data;
+});

@@ -1,4 +1,4 @@
-import { AppModule } from '@modules/main/app/app.module';
+import { AppModule } from '@modules/app/app.module';
 import {
   INestApplication,
   ValidationPipe,

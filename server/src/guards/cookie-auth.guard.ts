@@ -1,7 +1,8 @@
-import { SessionService } from '@modules/main/session';
+import { SessionService } from '@modules/session';
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Request } from 'express';
 
+// Check user was logined and check CSRF token
 @Injectable()
 export class CookieAuthGuard implements CanActivate {
   constructor(private sessionService: SessionService) {}
@@ -16,7 +17,7 @@ export class CookieAuthGuard implements CanActivate {
 
     if (tokenValid) {
       request.session.visit++;
-      request.session.last_active_date = Date.now();
+      request.session.lastActiveDate = Date.now();
     }
 
     return tokenValid;

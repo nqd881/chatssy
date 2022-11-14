@@ -1,6 +1,8 @@
 import {detectMeApi} from "@apis/auth/detect-me";
+import {useMe} from "@hooks/api/useMe";
 import {useQuery} from "@tanstack/react-query";
 import {sassClasses} from "@utils";
+import {AxiosError} from "axios";
 import {NextPage} from "next";
 import {useRouter} from "next/router";
 import {ReactElement} from "react";
@@ -16,19 +18,34 @@ interface AuthPageProps {
 export const AuthPage: NextPage<AuthPageProps> = ({title, content}) => {
   const router = useRouter();
 
-  const detectMe = useQuery({
-    queryKey: ["me"],
-    queryFn: detectMeApi,
-    staleTime: Infinity,
-  });
+  const me = useMe();
 
-  if (detectMe.isLoading) {
-    return <div>Loading me data</div>;
-  }
+  // const detectMe = useQuery({
+  //   queryKey: ["me"],
+  //   queryFn: detectMeApi,
+  //   staleTime: Infinity,
+  //   onError: (err: AxiosError) => {
+  //     console.log(err.message);
+  //   },
+  // });
 
-  if ((detectMe.data as any)._id) {
-    router.push("/apps/chat");
-  }
+  // if (detectMe.isLoading) {
+  //   return <div>Loading me data</div>;
+  // }
+
+  // console.log(detectMe);
+
+  // if (detectMe.error) {
+  //   return <div>{detectMe.error.message}</div>;
+  // }
+
+  // if ((detectMe.data as any)._id) {
+  //   router.push("/apps/chat");
+  // }
+
+  // if (me.data) {
+  //   router.push("/apps/chat");
+  // }
 
   return (
     <div className={cl("AuthPage")}>

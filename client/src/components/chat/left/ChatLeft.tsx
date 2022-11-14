@@ -1,5 +1,6 @@
 import {getChatsApi} from "@apis/user/get-chats";
-import {useAppStore} from "@contexts/AppStoreContext";
+import {useChats} from "@hooks/api/useChats";
+import {useMe} from "@hooks/api/useMe";
 import {useQuery} from "@tanstack/react-query";
 import {sassClasses} from "@utils";
 import {useEffect, useState} from "react";
@@ -11,13 +12,15 @@ import {Search} from "./Search";
 const cl = sassClasses(styles);
 
 export const ChatLeft = () => {
-  const {user} = useAppStore();
+  // const me = useMe();
 
-  const chats = useQuery({
-    queryKey: ["chats"],
-    queryFn: () => getChatsApi(user._id),
-    enabled: Boolean(user._id),
-  });
+  // const chats = useQuery({
+  //   queryKey: ["chats"],
+  //   queryFn: () => getChatsApi((me.data as any)?._id),
+  //   enabled: Boolean((me.data as any)?._id),
+  // });
+
+  const chats = useChats();
 
   return (
     <div className={cl("ChatLeft")}>

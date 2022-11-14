@@ -10,6 +10,7 @@ const nextApp = createNextServer({dev: DEV});
 async function bootstrapNextApp(expressApp: Express) {
   const nextHandler = nextApp.getRequestHandler();
   await nextApp.prepare();
+
   expressApp.use((req, res, next) =>
     nextHandler(req, res).catch((err) => {
       next(err);

@@ -1,4 +1,4 @@
-import { SessionCacheData } from '@modules/main/session';
+import { SessionCacheData } from '@modules/session';
 import { IResult } from 'ua-parser-js';
 
 export function autoDeclare() {}

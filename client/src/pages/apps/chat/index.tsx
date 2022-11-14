@@ -1,6 +1,5 @@
 import {ChatApp} from "@components/chat/ChatApp";
 import {AppPageWithAppbarLayout} from "@components/shared/AppPageWithAppbarLayout";
-import {AppStoreProvider} from "@contexts/AppStoreContext";
 import {ChatProvider} from "@contexts/ChatContext";
 import {NextPageWithLayout} from "@type";
 import {GetServerSideProps} from "next";
@@ -11,11 +10,9 @@ type ChatPageProps = {
 
 const ChatPage: NextPageWithLayout<ChatPageProps> = ({initialData}) => {
   return (
-    <AppStoreProvider>
-      <ChatProvider>
-        <ChatApp />
-      </ChatProvider>
-    </AppStoreProvider>
+    <ChatProvider>
+      <ChatApp />
+    </ChatProvider>
   );
 };
 

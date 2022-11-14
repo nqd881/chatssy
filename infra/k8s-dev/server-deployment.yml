@@ -39,6 +39,6 @@ spec:
             - name: GOOGLE_CLIENT_SECRET
               value: "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"
             - name: GOOGLE_MAILER_REFRESH_TOKEN
-              value: "1//04zGakvwNJn-DCgYIARAAGAQSNwF-L9Ir8kuPKv_LBQM_seSkCF2ONUZrbO-kL2VTpf_0WRpoVWV6rORCExDmJrcbMtl-yHAw6Zg"
+              value: "1//04i2wszFiJ2XdCgYIARAAGAQSNwF-L9Ir0ugCe8_yoL0IOdsH0Wo0Cvalqzpax8NNkKk_5wQ3FmwNiLcTKVt7qiJgzhkYovCo3Rs"
             - name: MESSAGE_BUCKET_MAX_COUNT
               value: "3"

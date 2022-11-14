@@ -1,5 +1,5 @@
 import {ApiClient} from "@apis/base";
 
-export const getChatsApi = (userId: string) => {
-  return ApiClient.get(`users/${userId}/chats`);
+export const getChatsApi = (userID: string) => {
+  return ApiClient.get(`user/${userID}/chats`);
 };

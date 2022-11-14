@@ -8,8 +8,7 @@ import styles from "./Content.module.scss";
 import {useMutation} from "@tanstack/react-query";
 import {loginApi} from "@apis/auth/login";
 import {useRouter} from "next/router";
-import {useAppStore} from "@contexts/AppStoreContext";
-
+import {useLogin} from "@hooks/api/useLogin";
 const cl = sassClasses(styles);
 
 interface LoginForm {
@@ -24,12 +23,14 @@ const ThirdPartyLogin = () => {
 export const AuthLogin = () => {
   const router = useRouter();
 
-  const login = useMutation({
-    mutationFn: loginApi,
-    onSuccess: (result) => {
-      router.push("/apps/chat");
-    },
-  });
+  // const login = useMutation({
+  //   mutationFn: loginApi,
+  //   onSuccess: (result) => {
+  //     router.push("/apps/chat");
+  //   },
+  // });
+
+  const login = useLogin();
 
   const formConfig: FormikConfig<LoginForm> = {
     initialValues: {

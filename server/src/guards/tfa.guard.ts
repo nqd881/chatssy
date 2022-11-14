@@ -1,8 +1,9 @@
-import { TfaService } from '@modules/main/tfa/tfa.service';
+import { TfaService } from '@modules/tfa/tfa.service';
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { TfaDto } from '@types';
 import { Request } from 'express';
 
+// Check tfa code is valid
 @Injectable()
 export class TfaGuard implements CanActivate {
   constructor(private tfaService: TfaService) {}

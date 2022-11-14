@@ -1,9 +1,8 @@
-import {detectMeApi} from "@apis/auth/detect-me";
-import {AppStoreProvider, useAppStore} from "@contexts/AppStoreContext";
 import {ChatCenterContextProvider} from "@contexts/ChatCenterContext";
 import {useChatCtx} from "@contexts/ChatContext";
-import {useQuery} from "@tanstack/react-query";
+import {useMe} from "@hooks/api/useMe";
 import {sassClasses} from "@utils";
+import {useRouter} from "next/router";
 import {useEffect} from "react";
 import {ChatCenter} from "./center/ChatCenter";
 import styles from "./ChatApp.module.scss";
@@ -13,30 +12,16 @@ import {ChatRight} from "./right/ChatRight";
 const cl = sassClasses(styles);
 
 export const ChatApp = () => {
+  const router = useRouter();
   const {chatAppRef} = useChatCtx();
 
-  const {user, setUser} = useAppStore();
+  const me = useMe();
 
-  const detectMe = useQuery({
-    queryKey: ["me"],
-    queryFn: detectMeApi,
-    onSuccess: (data) => {
-      console.log(data);
-      if (setUser) setUser(data);
-    },
-    onError: (err) => {
-      console.log(err);
-    },
-    enabled: Boolean(setUser),
-  });
-
-  if (detectMe.isLoading) {
-    return <div>Loading me data ....</div>;
-  }
-
-  if (detectMe.error) {
-    return <div>Have error when fetching data</div>;
-  }
+  // useEffect(() => {
+  //   if (!me.data) {
+  //     router.push("/auth/login");
+  //   }
+  // }, [router, me.data]);
 
   return (
     <div ref={chatAppRef} className={cl("ChatApp")}>
