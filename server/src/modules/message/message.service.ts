@@ -9,6 +9,7 @@ import mongoose from 'mongoose';
 import { InjectModel } from 'nestgoose';
 import { Env } from 'src/env/types';
 import { AddMessageData } from './data-types';
+import { newObjectId } from '@utils/mongodb';
 
 @Injectable()
 export class MessageService {
@@ -56,10 +57,10 @@ export class MessageService {
                 '$messages',
                 [
                   {
-                    _id: new mongoose.Types.ObjectId(),
+                    _id: newObjectId(),
                     chatId: '$chatId',
                     bucketId: '$_id',
-                    senderId: new mongoose.Types.ObjectId(data.senderId),
+                    senderId: newObjectId(data.senderId),
                     type: data.type,
                     content: data.content,
                     date: Date.now(),

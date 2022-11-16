@@ -1,16 +1,19 @@
 import {
   Body,
   Controller,
+  ForbiddenException,
   Get,
   Param,
   Patch,
   Post,
   Req,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import {
   ApiBody,
   ApiExtraModels,
+  ApiResponse,
   ApiTags,
   getSchemaPath,
 } from '@nestjs/swagger';
@@ -23,21 +26,40 @@ import { CookieAuthGuard } from 'src/guards';
 import { SessionUserData } from '../session';
 import { ChatService } from './chat.service';
 
-import { ApiPayloadCreateChat } from './api/create-chat';
+import { Converter } from '@automapper/core';
+import { MapInterceptor } from '@automapper/nestjs';
+import { docToInstance } from '@utils/mongodb';
+import { isObjectIdOrHexString, Types } from 'mongoose';
+import { DbChat } from 'src/db-models/chat.model';
+import { ApiDataChat } from './api/data/chat.data';
+import { ApiPayloadCreateChat } from './api/payload/create-chat';
 import {
   ApiPayloadCreateDocumentMessage,
-  ApiPayloadCreateMessageBase,
+  ApiPayloadCreateMessage,
   ApiPayloadCreateTextMessage,
-} from './api/create-new-message';
+} from './api/payload/create-new-message';
 import { ChatIdentificationParam } from './types';
-import { isObjectIdOrHexString } from 'mongoose';
+
+export class ObjectIdToStringConverter
+  implements Converter<Types.ObjectId, String>
+{
+  convert(source: Types.ObjectId) {
+    if (isObjectIdOrHexString(source)) return source.toString();
+    return null;
+  }
+}
 
 @ApiTags(ChatssyApiTags.DbChat)
 @Controller('chats')
 export class ChatController {
   constructor(private chatService: ChatService) {}
 
+  @ApiResponse({
+    status: 201,
+    type: ApiDataChat,
+  })
   @Post()
+  @UseInterceptors(MapInterceptor(DbChat, ApiDataChat))
   @UseGuards(CookieAuthGuard)
   async createChat(
     @Session('user') user: SessionUserData,
@@ -54,16 +76,24 @@ export class ChatController {
       memberIds,
     });
 
-    return newChat;
+    return docToInstance(DbChat, newChat);
   }
 
+  @ApiResponse({
+    status: 200,
+    type: ApiDataChat,
+  })
   @Get(':chat_id')
+  @UseInterceptors(MapInterceptor(DbChat, ApiDataChat))
   @UseGuards(CookieAuthGuard)
   async getChat(
     @Session('user') user: SessionUserData,
     @Param() { chat_id }: ChatIdentificationParam,
   ) {
-    return this.chatService.getChat(user.id, chat_id);
+    const chat = await this.chatService.getChat(chat_id);
+
+    if (chat.checkIsMember(user.id)) throw new ForbiddenException();
+    return docToInstance(DbChat, chat);
   }
 
   @Get(':chat_id/messages')
@@ -98,7 +128,7 @@ export class ChatController {
         },
       }),
     )
-    payload: ApiPayloadCreateMessageBase,
+    payload: ApiPayloadCreateMessage,
   ) {
     return this.chatService.newMessage(chat_id, {
       senderId: user.id,

@@ -5,6 +5,8 @@ import { MessageService } from '../message';
 import { AddMessageData } from '../message/data-types';
 import { UserChatsService } from '../user-modules/user-chats/user-chats.service';
 import { CreateNewChatArgs } from './args';
+import { plainToInstance } from 'class-transformer';
+import { docToPlain } from '@utils/mongodb';
 
 @Injectable()
 export class ChatService {
@@ -14,11 +16,8 @@ export class ChatService {
     private messageService: MessageService,
   ) {}
 
-  async getChat(userId: string, chatId: string) {
-    const chat = await this.chatModel.findById(chatId);
-
-    if (!chat.checkIsMember(userId)) throw new ForbiddenException();
-    return chat;
+  async getChat(chatId: string) {
+    return this.chatModel.findById(chatId);
   }
 
   async create({ title, creatorId, memberIds }: CreateNewChatArgs) {
@@ -33,7 +32,11 @@ export class ChatService {
     });
 
     this.userChatsService.addChatToMembers(newChat.id, memberIds);
+
     return newChat;
+    // console.log(newChat);
+
+    // return plainToInstance(DbChat, docToPlain(newChat));
   }
 
   async findOne(chatId: string) {

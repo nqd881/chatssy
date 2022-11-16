@@ -17,7 +17,7 @@ import { UserChatsService } from './user-chats.service';
 @ApiTags(ChatssyApiTags.DbUser)
 @Controller('user/:user_id/chats')
 @ResourceOwnerID((req) => req.params['user_id'])
-@UseInterceptors(ClassSerializerInterceptor)
+// @UseInterceptors(ClassSerializerInterceptor)
 @UseGuards(CookieAuthGuard)
 export class UserChatsController {
   constructor(private service: UserChatsService) {}

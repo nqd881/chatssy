@@ -1,4 +1,4 @@
-import { Message, DbMessageTypes } from 'src/db-models/message';
+import { DbMessage, DbMessageTypes } from 'src/db-models/message';
 
 export type AddMessageData = {
   senderId: string;

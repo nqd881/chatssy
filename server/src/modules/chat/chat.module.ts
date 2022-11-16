@@ -6,6 +6,9 @@ import { UserChatsModule } from '../user-modules/user-chats/user-chats.module';
 import { ChatController } from './chat.controller';
 import { ChatGateway } from './chat.gateway';
 import { ChatService } from './chat.service';
+import { ChatMapperProfile } from './mapper-profile/chat-mapper-profile';
+
+const mapperProfileProviders = [ChatMapperProfile];
 
 @Module({
   imports: [
@@ -14,6 +17,6 @@ import { ChatService } from './chat.service';
     MessageModule,
   ],
   controllers: [ChatController],
-  providers: [ChatService, ChatGateway],
+  providers: [ChatService, ChatGateway, ...mapperProfileProviders],
 })
 export class ChatModule {}

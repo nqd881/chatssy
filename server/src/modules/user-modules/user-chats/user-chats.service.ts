@@ -1,13 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { Types } from 'mongoose';
+import { newObjectId } from '@utils/mongodb';
 import { InjectModel } from 'nestgoose';
 import { DbUserChatStates } from 'src/db-models/user/user-chat.model';
 import { DbUser, DbUserModel } from 'src/db-models/user/user.model';
-
-export type GetUserChatsOptions = {
-  states?: DbUserChatStates[];
-  ids?: string[];
-};
 
 @Injectable()
 export class UserChatsService {
@@ -33,7 +28,7 @@ export class UserChatsService {
     const result = await this.userModel.aggregate([
       {
         $match: {
-          _id: new Types.ObjectId(userId),
+          _id: newObjectId(userId),
         },
       },
       {

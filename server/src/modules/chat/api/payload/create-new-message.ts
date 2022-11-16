@@ -27,7 +27,7 @@ export class ApiPayloadCreateTextMessage
   content: ApiPayloadCreateTextMessageContent;
 }
 
-export class CreateDocumentMessageContentDto {
+export class ApiPayloadCreateDocumentMessageContent {
   @ApiProperty()
   @IsString()
   fileName: string;
@@ -45,11 +45,11 @@ export class ApiPayloadCreateDocumentMessage
   type: DbMessageTypes.DOCUMENT;
 
   @ApiProperty()
-  @IsType(CreateDocumentMessageContentDto)
+  @IsType(ApiPayloadCreateDocumentMessageContent)
   @IsNotEmpty()
-  content: CreateDocumentMessageContentDto;
+  content: ApiPayloadCreateDocumentMessageContent;
 }
 
-export type CreateMessageDto =
+export type ApiPayloadCreateMessage =
   | ApiPayloadCreateTextMessage
   | ApiPayloadCreateDocumentMessage;

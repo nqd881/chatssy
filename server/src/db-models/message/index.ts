@@ -37,5 +37,5 @@ export class DbTextMessage extends DbMessageBase {
   content: DbTextContent;
 }
 
-export type Message = DbDocumentMessage | DbPhotoMessage | DbTextMessage;
-export type MessageDoc = DocumentType<Message>;
+export type DbMessage = DbDocumentMessage | DbPhotoMessage | DbTextMessage;
+export type DbMessageDoc = DocumentType<DbMessage>;

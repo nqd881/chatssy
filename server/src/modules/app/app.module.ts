@@ -1,3 +1,5 @@
+import { classes } from '@automapper/classes';
+import { AutomapperModule } from '@automapper/nestjs';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import {
@@ -80,6 +82,9 @@ const modulesImported = [
         },
       };
     },
+  }),
+  AutomapperModule.forRoot({
+    strategyInitializer: classes(),
   }),
   UserModule,
   AuthModule,

@@ -47,8 +47,6 @@ export class AuthService {
       .fetchUserAuthByUsername(username)
       .findOne({ isActivated: true });
 
-    console.log(userAuth);
-
     if (!userAuth?.isActivated) throw WrongCredentials;
 
     const passwordValid = await this.userAuthService.comparePassword(

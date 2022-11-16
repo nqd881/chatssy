@@ -1,16 +1,20 @@
+import { AutoMap } from '@automapper/classes';
 import {
   DocumentType,
   modelOptions,
   prop,
   PropType,
-  Ref,
   ReturnModelType,
 } from '@typegoose/typegoose';
-import mongoose, { Types } from 'mongoose';
-import { DbMessageBucket } from './message-bucket.model';
+import { Types } from 'mongoose';
+import {
+  DbDocumentMessage,
+  DbMessage,
+  DbMessageBase,
+  DbTextMessage,
+} from './message';
 import { DbPhoto } from './photo.model';
-import { DbUser } from './user/user.model';
-import { applyDateNow, applyNewId } from './utils';
+import { applyDateNow, DocumentCT } from './utils';
 
 @modelOptions({
   schemaOptions: {
@@ -20,45 +24,56 @@ import { applyDateNow, applyNewId } from './utils';
 export class ChatMemberStatus {}
 
 @modelOptions({})
-export class ChatMember {
-  @prop({ ref: () => DbUser, required: true })
-  userId: Ref<DbUser>;
+export class DbChatMember {
+  @AutoMap()
+  @prop({ required: true })
+  userId: Types.ObjectId;
 
-  @prop({ ref: () => DbUser, required: true })
-  inviterId: Ref<DbUser>;
+  @AutoMap()
+  @prop({ required: true })
+  inviterId: Types.ObjectId;
 
+  @AutoMap()
   @prop({ required: true })
   isAdmin: boolean;
 
+  @AutoMap()
   @prop({ default: null })
   nickname: string;
 
+  @AutoMap()
   @prop({ default: applyDateNow })
   joinedDate: number;
 
+  @AutoMap()
   @prop({ default: null })
-  lastMessageViewedId: mongoose.Types.ObjectId;
+  lastMessageViewedId: Types.ObjectId;
 
+  @AutoMap()
   @prop()
   status: ChatMemberStatus;
 }
 
 @modelOptions({})
-export class DbChat {
+export class DbChat extends DocumentCT {
+  @AutoMap()
   @prop({ required: true })
   title: string;
 
+  @AutoMap()
   @prop({ default: null })
   photo: DbPhoto;
 
+  @AutoMap()
   @prop({ required: true })
   creatorId: Types.ObjectId;
 
-  @prop({ type: [ChatMember], required: true }, PropType.ARRAY)
-  members: mongoose.Types.Array<ChatMember>;
+  @AutoMap(() => DbChatMember)
+  @prop({ type: [DbChatMember], required: true }, PropType.ARRAY)
+  members: Types.Array<DbChatMember>;
 
-  @prop({ ref: () => DbMessageBucket, default: [] }, PropType.ARRAY)
-  bucketIds: Ref<DbMessageBucket>[];
+  @prop({ type: () => [Types.ObjectId], default: [] }, PropType.ARRAY)
+  bucketIds: Types.Array<Types.ObjectId>;
 
   checkIsMember(this: DbChatDoc, userId: string) {
     return Boolean(

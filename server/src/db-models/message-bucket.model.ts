@@ -7,33 +7,24 @@ import {
   ReturnModelType,
   Severity,
 } from '@typegoose/typegoose';
-import mongoose from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import { DbChat } from './chat.model';
-import { Message, MessageDoc, DbMessageBase } from './message';
+import { DbMessage } from './message';
 
 @modelOptions({
-  schemaOptions: {
-    toJSON: {
-      transform(doc, ret) {
-        ret.id = ret._id;
-        delete ret._id;
-        delete ret.__v;
-      },
-    },
-  },
   options: {
     allowMixed: Severity.ALLOW,
   },
 })
 export class DbMessageBucket {
-  @prop({ ref: () => DbChat, required: true, index: true })
-  chatId: Ref<DbChat>;
+  @prop({ required: true, index: true })
+  chatId: Types.ObjectId;
 
   @prop({ required: true })
   isLastBucket: boolean;
 
-  @prop({ ref: () => DbMessageBucket, default: null })
-  prevBucketId: Ref<DbMessageBucket>;
+  @prop({ default: null })
+  prevBucketId: Types.ObjectId;
 
   @prop({ required: true })
   order: number;
@@ -42,10 +33,10 @@ export class DbMessageBucket {
   messagesCount: number;
 
   @prop({ default: [] }, PropType.ARRAY)
-  messages: mongoose.Types.Array<Message>;
+  messages: mongoose.Types.Array<DbMessage>;
 
   @prop({ default: null })
-  lastMessage: Message;
+  lastMessage: DbMessage;
 }
 
 export type DbMessageBucketDoc = DocumentType<DbMessageBucket>;

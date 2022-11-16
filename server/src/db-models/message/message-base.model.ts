@@ -1,14 +1,5 @@
-import {
-  modelOptions,
-  prop,
-  PropType,
-  Ref,
-  Severity,
-} from '@typegoose/typegoose';
-import mongoose from 'mongoose';
-import { DbChat } from '../chat.model';
-import { DbMessageBucket } from '../message-bucket.model';
-import { DbUser } from '../user/user.model';
+import { modelOptions, prop, PropType, Severity } from '@typegoose/typegoose';
+import mongoose, { Types } from 'mongoose';
 
 @modelOptions({
   options: {
@@ -19,20 +10,20 @@ import { DbUser } from '../user/user.model';
   },
 })
 export abstract class DbMessageBase extends mongoose.Types.Subdocument {
-  @prop({ ref: () => DbChat, required: true })
-  chatId: Ref<DbChat>;
+  @prop({ required: true })
+  chatId: Types.ObjectId;
 
-  @prop({ ref: () => DbMessageBucket, required: true })
-  bucketId: Ref<DbMessageBucket>;
+  @prop({ required: true })
+  bucketId: Types.ObjectId;
 
-  @prop({ ref: () => DbUser, required: true })
-  senderId: Ref<DbUser>;
+  @prop({ required: true })
+  senderId: Types.ObjectId;
 
   @prop({ required: true })
   date: number;
 
-  @prop({ ref: () => DbUser, default: [] }, PropType.ARRAY)
-  mentions: Ref<DbUser>[];
+  @prop({ default: [] }, PropType.ARRAY)
+  mentions: Types.Array<Types.ObjectId>;
 
   @prop({ required: true })
   abstract type: string;
