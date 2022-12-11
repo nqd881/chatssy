@@ -22,6 +22,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { UserAuthService } from '../user-auth/user-auth.service';
 import { CreateUserData } from './data-types';
 import { UserFullInfo } from './types';
+import { ConfigService } from '@nestjs/config';
+import { Env } from 'src/env/types';
 @Injectable()
 export class UserService {
   constructor(
@@ -32,6 +34,7 @@ export class UserService {
     private tokenService: TokenService,
     private mailerService: MailerService,
     private userAuthService: UserAuthService,
+    private envConfig: ConfigService,
   ) {}
 
   async createUser({
@@ -84,7 +87,8 @@ export class UserService {
     userId: string,
     token: string,
   ) {
-    const url = `http://192.168.49.2/api/user/registration/email?user_id=${userId}&token=${token}`;
+    const DOMAIN = this.envConfig.get(Env.DOMAIN);
+    const url = `http://${DOMAIN}/api/user/registration/email?user_id=${userId}&token=${token}`;
 
     this.mailerService.sendMail({
       to: emailAddress,
@@ -98,7 +102,10 @@ export class UserService {
 
   async registerWithEmail(data: CreateUserData) {
     const userAuth = await this.userAuthModel.findOne({
-      $or: [{ username: data.username }, { email: data.email }],
+      $or: [
+        { username: data.username },
+        { 'mainEmail.emailAddress': data.email },
+      ],
     });
 
     if (userAuth) throw new BadRequestException('Email or username is existed');
@@ -112,7 +119,7 @@ export class UserService {
       token.code,
     );
 
-    return userData;
+    return userData.profile;
   }
 
   async verifyMainEmail(userId: string, code: string) {

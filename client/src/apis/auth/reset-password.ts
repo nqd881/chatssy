@@ -5,14 +5,14 @@ export type PasswordForgotData = {
 };
 
 export const passwordForgotApi = (data: PasswordForgotData) => {
-  return ApiClient.post("users/auth/password_forgot", data);
+  return ApiClient.post("user/auth/password_forgot", data);
 };
 
 export type PasswordResetData = {
   password: string;
-  confirm_password: string;
+  confirmPassword: string;
 };
 
 export const passwordResetApi = (data: PasswordResetData) => {
-  return ApiClient.post("users/auth/password_reset", data);
+  return ApiClient.post("user/auth/password_reset", data);
 };

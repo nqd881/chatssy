@@ -19,12 +19,22 @@
     "noFallthroughCasesInSwitch": false,
     "esModuleInterop": true,
     "paths": {
-      "@modules/*": ["src/modules/*"],
       "@pipes/*": ["src/pipes/*"],
       "@pipes": ["src/pipes/index"],
-      "@types": ["src/types/index"],
+      "@interceptors": ["src/interceptors/index"],
+      "@interceptors/*": ["src/interceptors/*"],
+      "@middlewares": ["src/middlewares/index"],
+      "@middlewares/*": ["src/middlewares/*"],
+      "@guards": ["src/guards/index"],
+      "@guards/*": ["src/guards/*"],
       "@utils": ["src/utils/index"],
-      "@utils/*": ["src/utils/*"]
+      "@utils/*": ["src/utils/*"],
+      "@templates/*": ["src/templates/*"],
+      "@decorators/*": ["src/decorators/*"],
+      "@dbmodels/*": ["src/db-models/*"],
+      "@modules/*": ["src/modules/*"],
+      "@constant/*": ["src/constant/*"],
+      "@types": ["src/types/index"]
     }
   },
   "include": ["src/**/*"]

@@ -1,55 +1,63 @@
-import { DbMessageTypes } from 'src/db-models/message';
-import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
-import { IsType } from 'src/decorators/validator/is-type.decorator';
+import { ApiProperty, getSchemaPath } from '@nestjs/swagger';
+import {
+  ClassConstructor,
+  Expose,
+  plainToInstance,
+  Transform,
+} from 'class-transformer';
+import { IsEnum, IsString, ValidateNested } from 'class-validator';
+import { DbMessageContentTypes } from 'src/db-models/message';
 
-export interface ApiPayloadCreateMessageBase {
-  type: DbMessageTypes;
-  content: any;
-}
-
-export class ApiPayloadCreateTextMessageContent {
+export class ApiPayloadCreateMessageContentText {
   @ApiProperty()
   @IsString()
+  @Expose()
   text: string;
 }
 
-export class ApiPayloadCreateTextMessage
-  implements ApiPayloadCreateMessageBase
-{
+export class ApiPayloadCreateMessageContentDocument {
   @ApiProperty()
   @IsString()
-  type: DbMessageTypes.TEXT;
-
-  @ApiProperty()
-  @IsType(ApiPayloadCreateTextMessageContent)
-  @IsNotEmpty()
-  content: ApiPayloadCreateTextMessageContent;
-}
-
-export class ApiPayloadCreateDocumentMessageContent {
-  @ApiProperty()
-  @IsString()
+  @Expose()
   fileName: string;
 
   @ApiProperty()
   @IsString()
+  @Expose()
   mimeType: string;
 }
 
-export class ApiPayloadCreateDocumentMessage
-  implements ApiPayloadCreateMessageBase
-{
+export const API_PAYLOAD_CREATE_MESSAGE_CONTENT_MAP: Partial<
+  Record<DbMessageContentTypes, ClassConstructor<any>>
+> = {
+  [DbMessageContentTypes.Text]: ApiPayloadCreateMessageContentText,
+  [DbMessageContentTypes.Document]: ApiPayloadCreateMessageContentDocument,
+};
+
+export class ApiPayloadCreateMessage {
   @ApiProperty()
+  @IsEnum(DbMessageContentTypes)
   @IsString()
-  type: DbMessageTypes.DOCUMENT;
+  @Expose()
+  contentType: DbMessageContentTypes;
 
-  @ApiProperty()
-  @IsType(ApiPayloadCreateDocumentMessageContent)
-  @IsNotEmpty()
-  content: ApiPayloadCreateDocumentMessageContent;
+  @ApiProperty({
+    oneOf: Object.values(API_PAYLOAD_CREATE_MESSAGE_CONTENT_MAP).map(
+      (classConstructor) => ({
+        $ref: getSchemaPath(classConstructor),
+      }),
+    ),
+  })
+  @ValidateNested()
+  @Transform((params) => {
+    return plainToInstance(
+      API_PAYLOAD_CREATE_MESSAGE_CONTENT_MAP[params.obj['contentType']],
+      params.value,
+      {
+        excludeExtraneousValues: true,
+      },
+    );
+  })
+  @Expose()
+  content: any;
 }
-
-export type ApiPayloadCreateMessage =
-  | ApiPayloadCreateTextMessage
-  | ApiPayloadCreateDocumentMessage;

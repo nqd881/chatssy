@@ -1,33 +1,33 @@
 export class UserAddress {
-  country_code: string;
+  countryCode: string;
   state: string;
   city: string;
-  street_line_1: string;
-  street_line_2: string;
-  postal_code: string;
+  streetLine1: string;
+  streetLine2: string;
+  postalCode: string;
 }
 
 export class UserEmail {
-  email_address: string;
-  is_verified: boolean;
+  emailAddress: string;
+  isVerified: boolean;
 }
 
 export class UserEmails {
-  main_email: UserEmail;
-  extra_email: UserEmail;
+  mainEmail: UserEmail;
+  extraEmail: UserEmail;
 }
 
 export class UserProfileDetails {
-  first_name: string;
-  last_name: string;
-  birth_date: Date;
+  firstName: string;
+  lastName: string;
+  birthDate: Date;
   photo: string;
   address: UserAddress;
 }
 
 export class UserProfileBasic {
-  first_name: string;
-  last_name: string;
+  firstName: string;
+  lastName: string;
   photo: string;
 }
 

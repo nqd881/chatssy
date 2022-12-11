@@ -10,6 +10,7 @@ export enum DbUserChatStates {
 @modelOptions({
   schemaOptions: {
     _id: false,
+    versionKey: false,
   },
 })
 export class DbUserChat {

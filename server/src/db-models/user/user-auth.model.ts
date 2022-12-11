@@ -5,11 +5,13 @@ import {
   Ref,
   ReturnModelType,
 } from '@typegoose/typegoose';
+import { Types } from 'mongoose';
 import { DbUser } from './user.model';
 
 @modelOptions({
   schemaOptions: {
     _id: false,
+    versionKey: false,
   },
 })
 export class UserAuthEmail {
@@ -23,6 +25,21 @@ export class UserAuthEmail {
 @modelOptions({
   schemaOptions: {
     _id: false,
+    versionKey: false,
+  },
+})
+export class UserAuthCredentials {
+  @prop({ required: true })
+  username: string;
+
+  @prop({ required: true })
+  password: string;
+}
+
+@modelOptions({
+  schemaOptions: {
+    _id: false,
+    versionKey: false,
   },
 })
 export class UserAuthPhone {
@@ -33,16 +50,23 @@ export class UserAuthPhone {
   isVerified: boolean;
 }
 
-@modelOptions({})
+@modelOptions({
+  schemaOptions: {
+    versionKey: false,
+  },
+})
 export class DbUserAuth {
-  @prop({ ref: () => DbUser, required: true, unique: true, index: true })
-  userId: Ref<DbUser>;
+  @prop({ required: true, unique: true, index: true })
+  userId: Types.ObjectId;
 
   @prop({ required: true })
-  username: string;
+  credentials: UserAuthCredentials;
 
-  @prop({ required: true })
-  password: string;
+  // @prop({ required: true })
+  // username: string;
+
+  // @prop({ required: true })
+  // password: string;
 
   @prop({ required: true })
   mainEmail: UserAuthEmail;

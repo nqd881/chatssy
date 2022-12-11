@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Expose } from 'class-transformer';
 import {
   ArrayNotEmpty,
   ArrayUnique,
@@ -10,6 +11,7 @@ import {
 export class ApiPayloadCreateChat {
   @ApiProperty()
   @IsString()
+  @Expose()
   title: string;
 
   @ApiProperty()
@@ -17,5 +19,6 @@ export class ApiPayloadCreateChat {
   @ArrayUnique()
   @ArrayNotEmpty()
   @IsArray()
+  @Expose()
   memberIds: string[];
 }

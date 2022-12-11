@@ -5,7 +5,7 @@ import {sassClasses} from "@utils";
 import {AxiosError} from "axios";
 import {NextPage} from "next";
 import {useRouter} from "next/router";
-import {ReactElement} from "react";
+import {ReactElement, useEffect} from "react";
 import styles from "./AuthPage.module.scss";
 
 const cl = sassClasses(styles);
@@ -19,6 +19,10 @@ export const AuthPage: NextPage<AuthPageProps> = ({title, content}) => {
   const router = useRouter();
 
   const me = useMe();
+
+  // useEffect(() => {
+  //   if (me.data.userId) {}
+  // }, [me.data])
 
   // const detectMe = useQuery({
   //   queryKey: ["me"],

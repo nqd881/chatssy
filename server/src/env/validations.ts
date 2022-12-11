@@ -17,6 +17,9 @@ export enum NodeEnvironment {
 }
 
 export class ChatssyEnv {
+  @IsString()
+  [Env.DOMAIN]: string;
+
   @IsEnum(NodeEnvironment)
   [Env.NODE_ENV]: NodeEnvironment;
 

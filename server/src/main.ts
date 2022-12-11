@@ -1,3 +1,4 @@
+import { LoggingInterceptor } from '@interceptors/logging.interceptor';
 import { AppModule } from '@modules/app/app.module';
 import {
   INestApplication,
@@ -15,8 +16,13 @@ autoDeclare();
 const globalPipes = [
   new ValidationPipe({
     transform: true,
+    transformOptions: {
+      excludeExtraneousValues: true,
+    },
   }),
 ];
+
+const globalInterceptors = [new LoggingInterceptor()];
 
 function bootstrapSwagger(app: INestApplication) {
   const config = new DocumentBuilder()
@@ -41,6 +47,7 @@ async function bootstrap() {
 
   app.use(cookieParser());
   app.useGlobalPipes(...globalPipes);
+  app.useGlobalInterceptors(...globalInterceptors);
 
   await app.listen(3000);
 }

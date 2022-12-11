@@ -50,7 +50,7 @@ export class AuthService {
     if (!userAuth?.isActivated) throw WrongCredentials;
 
     const passwordValid = await this.userAuthService.comparePassword(
-      userAuth.password,
+      userAuth.credentials.password,
       password,
     );
 
@@ -62,13 +62,15 @@ export class AuthService {
 
     const { _id, auth, profile, setting, userType } = userData;
 
-    return this._login(req, res, {
+    const userSessionData = {
       id: _id.toString(),
       email: auth.mainEmail.emailAddress,
       name: `${profile.firstName} ${profile.lastName}`,
       type: userType,
       tfaEnabled: setting.security.tfa,
-    });
+    };
+
+    return this._login(req, res, userSessionData);
   }
 
   // async loginWithGoogle(req: Request, res: Response, token: string) {

@@ -5,7 +5,11 @@ import {
   ReturnModelType,
 } from '@typegoose/typegoose';
 
-@modelOptions({})
+@modelOptions({
+  schemaOptions: {
+    versionKey: false,
+  },
+})
 export class DbAddress {
   @prop({ default: null })
   countryCode: string;

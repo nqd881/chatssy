@@ -1,4 +1,4 @@
-import {AuthNotification} from "@components/auth/AuthNotfication";
+import {AuthNotification} from "@components/auth/AuthNotification";
 import {AuthPage} from "@components/auth/AuthPage";
 import {GetServerSideProps, NextPage} from "next";
 

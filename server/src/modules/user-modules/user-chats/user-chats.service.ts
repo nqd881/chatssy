@@ -44,7 +44,7 @@ export class UserChatsService {
       },
       {
         $lookup: {
-          from: 'chats',
+          from: 'dbchats',
           localField: 'chatId',
           foreignField: '_id',
           as: 'details',

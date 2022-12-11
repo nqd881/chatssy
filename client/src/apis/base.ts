@@ -1,7 +1,9 @@
 import axios from "axios";
 
+const DOMAIN = process.env.NEXT_PUBLIC_DOMAIN;
+
 export const ApiClient = axios.create({
-  baseURL: "http://192.168.49.2/api",
+  baseURL: `http://${DOMAIN}/api`,
   timeout: 2000,
   xsrfCookieName: "csrf_token",
   xsrfHeaderName: "X-CSRF-TOKEN",

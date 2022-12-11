@@ -7,7 +7,7 @@ export const useChats = () => {
 
   return useQuery({
     queryKey: ["chats"],
-    queryFn: async () => getChatsApi((data as any)?.user_id),
-    enabled: Boolean((data as any)?.user_id),
+    queryFn: async () => getChatsApi((data as any)?.userId),
+    enabled: Boolean((data as any)?.userId),
   });
 };

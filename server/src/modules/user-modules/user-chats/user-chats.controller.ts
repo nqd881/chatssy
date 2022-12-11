@@ -11,20 +11,20 @@ import { ChatssyApiTags } from 'src/constant/docs';
 import { ResourceOwnerID } from 'src/decorators/resource-owner-id.decorator';
 import { CookieAuthGuard } from 'src/guards';
 import { ResourceOwnerGuard } from 'src/guards/resource-owner.guard';
-import { UserParam } from '../types/params';
+import { ApiParamUser } from '../types/params';
 import { UserChatsService } from './user-chats.service';
 
 @ApiTags(ChatssyApiTags.DbUser)
 @Controller('user/:user_id/chats')
 @ResourceOwnerID((req) => req.params['user_id'])
-// @UseInterceptors(ClassSerializerInterceptor)
+@UseInterceptors(ClassSerializerInterceptor)
 @UseGuards(CookieAuthGuard)
 export class UserChatsController {
   constructor(private service: UserChatsService) {}
 
   @Get()
   @UseGuards(ResourceOwnerGuard)
-  async getAllChats(@Param() { user_id }: UserParam) {
+  async getAllChats(@Param() { user_id }: ApiParamUser) {
     return this.service.getAllUserChats(user_id);
   }
 

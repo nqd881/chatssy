@@ -1,10 +1,8 @@
 import {useChatCenterContext} from "@contexts/ChatCenterContext";
 import {useChatCtx} from "@contexts/ChatContext";
-import {useContextMenuHandlers} from "@hooks";
 import {sassClasses} from "@utils/buildClassName";
 import {CenterHeader} from "./CenterHeader";
 import styles from "./ChatCenter.module.scss";
-import {ChatCenterBackground} from "./ChatCenterBackground";
 import {MessageContextMenu} from "./MessageContextMenu";
 import {MessageInput} from "./MessageInput";
 import {MessagesView} from "./MessagesView";
@@ -30,7 +28,6 @@ export const ChatCenter = () => {
       <CenterHeader />
       <MessagesView />
       <MessageInput />
-      <ChatCenterBackground />
       {contextMenuPosition && (
         <MessageContextMenu
           isContextOpen={isContextMenuOpen}
@@ -42,3 +39,5 @@ export const ChatCenter = () => {
     </div>
   );
 };
+
+export default ChatCenter;

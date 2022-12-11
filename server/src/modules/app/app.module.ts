@@ -1,5 +1,3 @@
-import { classes } from '@automapper/classes';
-import { AutomapperModule } from '@automapper/nestjs';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import {
@@ -11,7 +9,7 @@ import {
   NestModule,
 } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { getEnvFilePath, isInDev, isInProd, parseTimeMs } from '@utils';
+import { isInProd, parseTimeMs } from '@utils';
 import { Cache } from 'cache-manager';
 import RedisCacheStoreFactory from 'cache-manager-ioredis';
 import RedisSessionStore from 'connect-redis';
@@ -82,9 +80,6 @@ const modulesImported = [
         },
       };
     },
-  }),
-  AutomapperModule.forRoot({
-    strategyInitializer: classes(),
   }),
   UserModule,
   AuthModule,

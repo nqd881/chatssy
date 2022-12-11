@@ -1,6 +1,6 @@
 export enum ChatssyApiTags {
   Auth = 'Auth',
-  DbUser = 'DbUser',
-  DbChat = 'DbChat',
+  DbUser = 'User',
+  DbChat = 'Chat',
   Tfa = 'Tfa',
 }

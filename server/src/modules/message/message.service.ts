@@ -1,20 +1,22 @@
-import {
-  DbMessageBucket,
-  DbMessageBucketModel,
-} from 'src/db-models/message-bucket.model';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import _ from 'lodash';
-import mongoose from 'mongoose';
 import { InjectModel } from 'nestgoose';
+import { DbMessage, DbMessageDoc, DbMessageModel } from 'src/db-models/message';
+import {
+  DbMessageBucket,
+  DbMessageBucketDoc,
+  DbMessageBucketModel,
+} from 'src/db-models/message-bucket.model';
+
 import { Env } from 'src/env/types';
 import { AddMessageData } from './data-types';
-import { newObjectId } from '@utils/mongodb';
 
 @Injectable()
 export class MessageService {
   constructor(
     @InjectModel(DbMessageBucket) private bucketModel: DbMessageBucketModel,
+    @InjectModel(DbMessage) private messageModel: DbMessageModel,
     private envConfig: ConfigService,
   ) {}
 
@@ -27,7 +29,9 @@ export class MessageService {
 
   _canBeUpdatedBucketQuery() {
     return {
-      messagesCount: { $lt: this.envConfig.get(Env.MESSAGE_BUCKET_MAX_COUNT) },
+      $expr: {
+        $lt: ['$messagesCount', '$messagesMaxCount'],
+      },
     };
   }
 
@@ -35,18 +39,44 @@ export class MessageService {
     return this.bucketModel.findOne(this._lastBucketQuery(chatId));
   }
 
-  async createBucket(chatId: string, order: number, prevBucketId: string) {
-    const newBucket = this.bucketModel.create({
+  buildLocalBucket(chatId: string, order: number, prevBucketId: string) {
+    return new this.bucketModel({
       chatId,
       order,
       prevBucketId,
       isLastBucket: true,
+      messagesMaxCount: new Number(
+        this.envConfig.get(Env.MESSAGE_BUCKET_MAX_COUNT),
+      ),
     });
-
-    return newBucket;
   }
 
   async newMessage(chatId: string, data: AddMessageData) {
+    const content = {
+      contentType: data.contentType,
+      ...data.content,
+    };
+
+    const message = new this.messageModel({
+      chatId,
+      bucketId: null,
+      senderId: data.senderId,
+      date: Date.now(),
+      content,
+    });
+
+    if (message) {
+      const bucket = await this.pushToLastBucket(chatId, message);
+      return bucket.getLastMessage();
+    }
+
+    return null;
+  }
+
+  async pushToLastBucket(
+    chatId: string,
+    message: DbMessageDoc,
+  ): Promise<DbMessageBucketDoc> {
     const bucket = await this.bucketModel.findOneAndUpdate(
       _.merge(this._lastBucketQuery(chatId), this._canBeUpdatedBucketQuery()),
       [
@@ -57,13 +87,15 @@ export class MessageService {
                 '$messages',
                 [
                   {
-                    _id: newObjectId(),
-                    chatId: '$chatId',
+                    ...message.toObject(),
                     bucketId: '$_id',
-                    senderId: newObjectId(data.senderId),
-                    type: data.type,
-                    content: data.content,
-                    date: Date.now(),
+                    searchId: {
+                      $concat: [
+                        { $toString: '$_id' },
+                        '.',
+                        message._id.toString(),
+                      ],
+                    },
                   },
                 ],
               ],
@@ -73,7 +105,6 @@ export class MessageService {
         {
           $set: {
             messagesCount: { $size: '$messages' },
-            lastMessage: { $last: '$messages' },
           },
         },
       ],
@@ -83,25 +114,31 @@ export class MessageService {
     );
 
     if (!bucket) {
-      const lastBucket = await this.findLastBucket(chatId);
-
-      if (lastBucket) {
-        await this.createBucket(
-          lastBucket.chatId.toString(),
-          lastBucket.order + 1,
-          lastBucket.id,
-        );
-
-        lastBucket.isLastBucket = false;
-        lastBucket.save();
-      } else {
-        await this.createBucket(chatId, 1, null);
-      }
-
-      return this.newMessage(chatId, data);
+      await this.createNewBucket(chatId);
+      return this.pushToLastBucket(chatId, message);
     }
 
-    return bucket.lastMessage;
+    return bucket;
+  }
+
+  async createNewBucket(chatId: string) {
+    const lastBucket = await this.findLastBucket(chatId);
+
+    if (lastBucket) {
+      const newBucket = this.buildLocalBucket(
+        lastBucket.chatId.toString(),
+        lastBucket.order + 1,
+        lastBucket.id,
+      );
+
+      lastBucket.isLastBucket = false;
+      lastBucket.save();
+
+      return newBucket.save();
+    }
+
+    const firstBucket = this.buildLocalBucket(chatId, 1, null);
+    return firstBucket.save();
   }
 
   async findMessage(bucketId: string, messageId: string) {

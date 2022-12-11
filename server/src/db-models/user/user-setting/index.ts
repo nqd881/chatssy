@@ -2,18 +2,21 @@ import {
   DocumentType,
   modelOptions,
   prop,
-  Ref,
   ReturnModelType,
 } from '@typegoose/typegoose';
+import { Types } from 'mongoose';
 import { applyDefault } from '../../utils';
-import { DbUser } from '../user.model';
 import { DbUserSettingLanguage } from './language.model';
 import { DbUserSettingSecurity } from './security.model';
 
-@modelOptions({})
+@modelOptions({
+  schemaOptions: {
+    versionKey: false,
+  },
+})
 export class DbUserSetting {
-  @prop({ ref: () => DbUser, required: true, unique: true, index: true })
-  userId: Ref<DbUser>;
+  @prop({ required: true, unique: true, index: true })
+  userId: Types.ObjectId;
 
   @prop({ default: applyDefault })
   language: DbUserSettingLanguage;

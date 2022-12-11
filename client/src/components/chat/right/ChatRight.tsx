@@ -24,3 +24,5 @@ export const ChatRight = () => {
     </div>
   );
 };
+
+export default ChatRight;

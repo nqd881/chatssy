@@ -5,9 +5,14 @@ import {
   ReturnModelType,
 } from '@typegoose/typegoose';
 import { DbFile } from './file.model';
+import { MongoDoc } from './utils';
 
-@modelOptions({})
-export class DbDocument {
+@modelOptions({
+  schemaOptions: {
+    versionKey: false,
+  },
+})
+export class DbDocument extends MongoDoc {
   @prop({ required: true })
   fileName: string;
 

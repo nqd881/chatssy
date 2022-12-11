@@ -1,79 +1,83 @@
-import { AutoMap } from '@automapper/classes';
 import {
   DocumentType,
   modelOptions,
   prop,
   PropType,
   ReturnModelType,
+  Severity,
 } from '@typegoose/typegoose';
+import { Exclude, Expose, Type } from 'class-transformer';
 import { Types } from 'mongoose';
-import {
-  DbDocumentMessage,
-  DbMessage,
-  DbMessageBase,
-  DbTextMessage,
-} from './message';
+import { DbMessage } from './message';
 import { DbPhoto } from './photo.model';
-import { applyDateNow, DocumentCT } from './utils';
+import { applyDateNow, MongoDoc } from './utils';
 
 @modelOptions({
   schemaOptions: {
+    versionKey: false,
     _id: false,
   },
 })
 export class ChatMemberStatus {}
 
-@modelOptions({})
-export class DbChatMember {
-  @AutoMap()
+@modelOptions({
+  schemaOptions: {
+    versionKey: false,
+  },
+})
+export class DbChatMember extends MongoDoc {
   @prop({ required: true })
   userId: Types.ObjectId;
 
-  @AutoMap()
   @prop({ required: true })
   inviterId: Types.ObjectId;
 
-  @AutoMap()
   @prop({ required: true })
   isAdmin: boolean;
 
-  @AutoMap()
   @prop({ default: null })
   nickname: string;
 
-  @AutoMap()
   @prop({ default: applyDateNow })
   joinedDate: number;
 
-  @AutoMap()
   @prop({ default: null })
   lastMessageViewedId: Types.ObjectId;
 
-  @AutoMap()
   @prop()
   status: ChatMemberStatus;
 }
 
-@modelOptions({})
-export class DbChat extends DocumentCT {
-  @AutoMap()
+@Expose()
+@modelOptions({
+  options: {
+    allowMixed: Severity.ALLOW,
+  },
+  schemaOptions: {
+    versionKey: false,
+  },
+})
+export class DbChat extends MongoDoc {
   @prop({ required: true })
   title: string;
 
-  @AutoMap()
   @prop({ default: null })
   photo: DbPhoto;
 
-  @AutoMap()
   @prop({ required: true })
   creatorId: Types.ObjectId;
 
-  @AutoMap(() => DbChatMember)
+  @Type(() => DbChatMember)
   @prop({ type: [DbChatMember], required: true }, PropType.ARRAY)
-  members: Types.Array<DbChatMember>;
+  members: DbChatMember[];
 
+  @Exclude()
   @prop({ type: () => [Types.ObjectId], default: [] }, PropType.ARRAY)
-  bucketIds: Types.Array<Types.ObjectId>;
+  bucketIds: Types.ObjectId[];
+
+  @Type(() => DbMessage)
+  @prop({ default: null })
+  lastMessage: DbMessage;
 
   checkIsMember(this: DbChatDoc, userId: string) {
     return Boolean(

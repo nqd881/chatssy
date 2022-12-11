@@ -19,33 +19,33 @@ type MediaDetails = {
 };
 
 const data: MediaDetails[] = [
-  {
-    id: "1",
-    url: "https://wallpaperaccess.com/full/228227.jpg",
-    type: MediaType.VIDEO,
-    time: "1:01",
-  },
-  {
-    id: "2",
-    url: "https://wallpaperaccess.com/full/858869.jpg",
-    type: MediaType.IMAGE,
-  },
-  {
-    id: "3",
-    url: "https://wallpaperaccess.com/full/2121737.jpg",
-    type: MediaType.IMAGE,
-  },
-  {
-    id: "4",
-    url: "https://wallpaperaccess.com/full/878503.jpg",
-    type: MediaType.IMAGE,
-  },
-  {
-    id: "5",
-    url: "https://wallpaperaccess.com/full/878503.jpg",
-    type: MediaType.VIDEO,
-    time: "21:04",
-  },
+  // {
+  //   id: "1",
+  //   url: "https://wallpaperaccess.com/full/228227.jpg",
+  //   type: MediaType.VIDEO,
+  //   time: "1:01",
+  // },
+  // {
+  //   id: "2",
+  //   url: "https://wallpaperaccess.com/full/858869.jpg",
+  //   type: MediaType.IMAGE,
+  // },
+  // {
+  //   id: "3",
+  //   url: "https://wallpaperaccess.com/full/2121737.jpg",
+  //   type: MediaType.IMAGE,
+  // },
+  // {
+  //   id: "4",
+  //   url: "https://wallpaperaccess.com/full/878503.jpg",
+  //   type: MediaType.IMAGE,
+  // },
+  // {
+  //   id: "5",
+  //   url: "https://wallpaperaccess.com/full/878503.jpg",
+  //   type: MediaType.VIDEO,
+  //   time: "21:04",
+  // },
 ];
 
 type MediaItemProps = {

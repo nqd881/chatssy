@@ -18,5 +18,10 @@ spec:
           ports:
             - containerPort: 3000
           env:
+            - name: NEXT_PUBLIC_DOMAIN
+              valueFrom:
+                configMapKeyRef:
+                  name: env-configmap
+                  key: domain
             - name: PORT
               value: "3000"

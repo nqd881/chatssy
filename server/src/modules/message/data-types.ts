@@ -1,7 +1,13 @@
-import { DbMessage, DbMessageTypes } from 'src/db-models/message';
+import { DbMessageContentTypes } from 'src/db-models/message';
 
 export type AddMessageData = {
   senderId: string;
-  type: DbMessageTypes;
+  contentType: DbMessageContentTypes;
   content: any;
 };
+
+// export interface MessageDataBase {
+//   senderId: string;
+// }
+
+// export interface

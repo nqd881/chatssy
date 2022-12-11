@@ -1,12 +1,12 @@
 import React from "react";
 import {sassClasses} from "@utils";
-import styles from "./ChatCenterBackground.module.scss";
+import styles from "./Background.module.scss";
 
 const cl = sassClasses(styles);
 
-export const ChatCenterBackground = () => {
+export const Background = () => {
   return (
-    <div className={cl("ChatCenterBackground")}>
+    <div className={cl("Background")}>
       <div className={cl("bg")} />
     </div>
   );

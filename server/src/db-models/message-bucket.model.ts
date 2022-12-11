@@ -3,20 +3,19 @@ import {
   modelOptions,
   prop,
   PropType,
-  Ref,
   ReturnModelType,
   Severity,
 } from '@typegoose/typegoose';
-import mongoose, { Types } from 'mongoose';
-import { DbChat } from './chat.model';
+import { Types } from 'mongoose';
 import { DbMessage } from './message';
+import { MongoDoc } from './utils';
 
 @modelOptions({
   options: {
     allowMixed: Severity.ALLOW,
   },
 })
-export class DbMessageBucket {
+export class DbMessageBucket extends MongoDoc {
   @prop({ required: true, index: true })
   chatId: Types.ObjectId;
 
@@ -29,14 +28,19 @@ export class DbMessageBucket {
   @prop({ required: true })
   order: number;
 
+  @prop({ required: true })
+  messagesMaxCount: number;
+
   @prop({ default: 0 })
   messagesCount: number;
 
   @prop({ default: [] }, PropType.ARRAY)
-  messages: mongoose.Types.Array<DbMessage>;
+  messages: Types.Array<DbMessage>;
 
-  @prop({ default: null })
-  lastMessage: DbMessage;
+  getLastMessage(this: DbMessageBucketDoc) {
+    const lastIndex = this.messagesCount - 1;
+    return this.messages[lastIndex];
+  }
 }
 
 export type DbMessageBucketDoc = DocumentType<DbMessageBucket>;

@@ -1,5 +1,6 @@
 import {
   Body,
+  ClassSerializerInterceptor,
   Controller,
   ForbiddenException,
   Get,
@@ -7,47 +8,31 @@ import {
   Patch,
   Post,
   Req,
+  SerializeOptions,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import {
-  ApiBody,
-  ApiExtraModels,
-  ApiResponse,
-  ApiTags,
-  getSchemaPath,
-} from '@nestjs/swagger';
-import { PipeDiscriminator } from '@pipes/discriminator.pipe';
+import { ApiExtraModels, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { ChatssyApiTags } from 'src/constant/docs';
-import { DbMessageTypes } from 'src/db-models/message';
 import { Session } from 'src/decorators/session.decorator';
 import { CookieAuthGuard } from 'src/guards';
 import { SessionUserData } from '../session';
 import { ChatService } from './chat.service';
 
-import { Converter } from '@automapper/core';
-import { MapInterceptor } from '@automapper/nestjs';
-import { docToInstance } from '@utils/mongodb';
-import { isObjectIdOrHexString, Types } from 'mongoose';
-import { DbChat } from 'src/db-models/chat.model';
+import { MongoSerializeInterceptor } from '@interceptors/mongo-serialize.interceptor';
+import { isObjectIdOrHexString } from 'mongoose';
 import { ApiDataChat } from './api/data/chat.data';
+import {
+  ApiDataMessage,
+  API_DATA_MESSAGE_CONTENT_MAP,
+} from './api/data/message.data';
 import { ApiPayloadCreateChat } from './api/payload/create-chat';
 import {
-  ApiPayloadCreateDocumentMessage,
   ApiPayloadCreateMessage,
-  ApiPayloadCreateTextMessage,
+  API_PAYLOAD_CREATE_MESSAGE_CONTENT_MAP,
 } from './api/payload/create-new-message';
 import { ChatIdentificationParam } from './types';
-
-export class ObjectIdToStringConverter
-  implements Converter<Types.ObjectId, String>
-{
-  convert(source: Types.ObjectId) {
-    if (isObjectIdOrHexString(source)) return source.toString();
-    return null;
-  }
-}
 
 @ApiTags(ChatssyApiTags.DbChat)
 @Controller('chats')
@@ -59,7 +44,8 @@ export class ChatController {
     type: ApiDataChat,
   })
   @Post()
-  @UseInterceptors(MapInterceptor(DbChat, ApiDataChat))
+  @UseInterceptors(ClassSerializerInterceptor, MongoSerializeInterceptor)
+  @SerializeOptions({ type: ApiDataChat })
   @UseGuards(CookieAuthGuard)
   async createChat(
     @Session('user') user: SessionUserData,
@@ -76,7 +62,7 @@ export class ChatController {
       memberIds,
     });
 
-    return docToInstance(DbChat, newChat);
+    return newChat;
   }
 
   @ApiResponse({
@@ -84,7 +70,8 @@ export class ChatController {
     type: ApiDataChat,
   })
   @Get(':chat_id')
-  @UseInterceptors(MapInterceptor(DbChat, ApiDataChat))
+  @UseInterceptors(ClassSerializerInterceptor, MongoSerializeInterceptor)
+  @SerializeOptions({ type: ApiDataChat })
   @UseGuards(CookieAuthGuard)
   async getChat(
     @Session('user') user: SessionUserData,
@@ -93,7 +80,8 @@ export class ChatController {
     const chat = await this.chatService.getChat(chat_id);
 
     if (chat.checkIsMember(user.id)) throw new ForbiddenException();
-    return docToInstance(DbChat, chat);
+
+    return chat;
   }
 
   @Get(':chat_id/messages')
@@ -105,35 +93,27 @@ export class ChatController {
     return this.chatService.getChatMessages(chat_id);
   }
 
-  @ApiExtraModels(ApiPayloadCreateTextMessage, ApiPayloadCreateDocumentMessage)
-  @ApiBody({
-    schema: {
-      oneOf: [
-        { $ref: getSchemaPath(ApiPayloadCreateTextMessage) },
-        { $ref: getSchemaPath(ApiPayloadCreateDocumentMessage) },
-      ],
-    },
+  @ApiExtraModels(...Object.values(API_PAYLOAD_CREATE_MESSAGE_CONTENT_MAP))
+  @ApiExtraModels(...Object.values(API_DATA_MESSAGE_CONTENT_MAP))
+  @ApiResponse({
+    status: 201,
+    type: ApiDataMessage,
   })
-  @Post(':chat_id/messages')
+  @UseInterceptors(ClassSerializerInterceptor, MongoSerializeInterceptor)
+  @SerializeOptions({ type: ApiDataMessage })
   @UseGuards(CookieAuthGuard)
+  @Post(':chat_id/messages')
   async newMessage(
     @Session('user') user: SessionUserData,
     @Param() { chat_id }: ChatIdentificationParam,
-    @Body(
-      new PipeDiscriminator({
-        discriminatorKey: 'type',
-        types: {
-          [DbMessageTypes.TEXT]: ApiPayloadCreateTextMessage,
-          [DbMessageTypes.DOCUMENT]: ApiPayloadCreateDocumentMessage,
-        },
-      }),
-    )
-    payload: ApiPayloadCreateMessage,
+    @Body() payload: ApiPayloadCreateMessage,
   ) {
-    return this.chatService.newMessage(chat_id, {
+    const newMessage = await this.chatService.newMessage(chat_id, {
       senderId: user.id,
       ...payload,
     });
+
+    return newMessage;
   }
 
   @Patch(':chat_id/members/:member_id')

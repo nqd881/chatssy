@@ -5,3 +5,4 @@ metadata:
 data:
   redis_host: redis-cluster-ip-service
   redis_port: "6379"
+  domain: "192.168.49.2"

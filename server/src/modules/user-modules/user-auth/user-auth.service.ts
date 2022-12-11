@@ -63,7 +63,7 @@ export class UserAuthService {
     arg1: DbUserAuthDoc | string,
     arg2: UpdateAuthData,
   ): Promise<DbUserAuthDoc> {
-    const { username, password } = arg2;
+    const { username, password } = arg2.credentials;
     const updateQuery = flattenToDotObject({
       username,
       password: password ? await this.hashPassword(password) : password,
@@ -111,7 +111,7 @@ export class UserAuthService {
     const tokenValid = await this.tokenService.verify(code);
 
     if (!tokenValid) return null;
-    return this.updateAuth(userId, { password });
+    return this.updateAuth(userId, { credentials: { password } });
   }
 
   async changePasswordStep1(email: string) {
@@ -127,13 +127,13 @@ export class UserAuthService {
     const userAuth = await this.fetchUserAuthByUserID(userId);
 
     const passwordValid = await this.comparePassword(
-      userAuth.password,
+      userAuth.credentials.password,
       password,
     );
 
     if (!passwordValid) throw WrongCredentials;
 
-    await this.updateAuth(userAuth, { password: newPassword });
+    await this.updateAuth(userAuth, { credentials: { password: newPassword } });
     return true;
   }
 }

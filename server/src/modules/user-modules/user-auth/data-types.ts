@@ -1,3 +1,4 @@
-import { DbUserAuth } from 'src/db-models/user/user-auth.model';
+import { DbUserAuth } from '@dbmodels/user/user-auth.model';
+import { PartialDeep } from 'type-fest';
 
-export type UpdateAuthData = Partial<DbUserAuth>;
+export type UpdateAuthData = PartialDeep<DbUserAuth>;

@@ -1,12 +1,11 @@
-import { DbChat, DbChatModel } from 'src/db-models/chat.model';
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from 'nestgoose';
+import { DbChat, DbChatModel } from 'src/db-models/chat.model';
+import { DbMessage } from 'src/db-models/message';
 import { MessageService } from '../message';
 import { AddMessageData } from '../message/data-types';
 import { UserChatsService } from '../user-modules/user-chats/user-chats.service';
 import { CreateNewChatArgs } from './args';
-import { plainToInstance } from 'class-transformer';
-import { docToPlain } from '@utils/mongodb';
 
 @Injectable()
 export class ChatService {
@@ -34,9 +33,6 @@ export class ChatService {
     this.userChatsService.addChatToMembers(newChat.id, memberIds);
 
     return newChat;
-    // console.log(newChat);
-
-    // return plainToInstance(DbChat, docToPlain(newChat));
   }
 
   async findOne(chatId: string) {
@@ -55,7 +51,17 @@ export class ChatService {
     );
   }
 
+  async updateLastMessage(chatId: string, newMessage: DbMessage) {
+    return this.chatModel.findByIdAndUpdate(chatId, {
+      lastMessage: newMessage,
+    });
+  }
+
   async newMessage(chatId: string, data: AddMessageData) {
-    return this.messageService.newMessage(chatId, data);
+    const newMessage = await this.messageService.newMessage(chatId, data);
+
+    this.updateLastMessage(chatId, newMessage);
+
+    return newMessage;
   }
 }

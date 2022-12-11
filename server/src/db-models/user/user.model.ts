@@ -6,7 +6,8 @@ import {
   Ref,
   ReturnModelType,
 } from '@typegoose/typegoose';
-import mongoose from 'mongoose';
+import { Type } from 'class-transformer';
+import mongoose, { Types } from 'mongoose';
 import { DbUserAuth } from './user-auth.model';
 import { DbUserChat } from './user-chat.model';
 import { DbUserProfile } from './user-profile.model';
@@ -20,29 +21,25 @@ export enum UserTypes {
 @modelOptions({
   schemaOptions: {
     timestamps: true,
-    toJSON: {
-      transform(doc, ret) {
-        delete ret.auth;
-        return ret;
-      },
-    },
+    versionKey: false,
   },
 })
 export class DbUser {
   @prop({ enum: UserTypes, default: UserTypes.REGULAR })
   userType: UserTypes;
 
+  @Type(() => DbUserChat)
   @prop({ type: [DbUserChat], default: [] }, PropType.ARRAY)
-  chats: mongoose.Types.Array<DbUserChat>;
+  chats: DbUserChat[];
 
-  @prop({ ref: () => DbUserProfile, default: null })
-  profileId: Ref<DbUserProfile>;
+  @prop({ required: true })
+  profileId: Types.ObjectId;
 
-  @prop({ ref: () => DbUserSetting, default: null })
-  settingId: Ref<DbUserSetting>;
+  @prop({ required: true })
+  settingId: Types.ObjectId;
 
-  @prop({ ref: () => DbUserAuth, default: null })
-  authId: Ref<DbUserAuth>;
+  @prop({ required: true })
+  authId: Types.ObjectId;
 }
 
 export type DbUserDoc = DocumentType<DbUser>;

@@ -5,6 +5,10 @@ import {AppPropsWithLayout} from "@type";
 import {useState} from "react";
 import theme from "src/styles/theme";
 
+export function reportWebVitals(metric) {
+  console.log(metric);
+}
+
 function MyApp({Component, pageProps}: AppPropsWithLayout) {
   const [queryClient] = useState(() => new QueryClient());
 

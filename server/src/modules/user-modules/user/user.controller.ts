@@ -4,8 +4,8 @@ import { ApiTags } from '@nestjs/swagger';
 import { ChatssyApiTags } from 'src/constant/docs';
 import { Session } from 'src/decorators/session.decorator';
 import { ApiQueries } from 'src/decorators/swagger/api-queries.decorator';
-import { ApiPayloadRegisterWithEmail } from './api/register';
-import { ApiQueryVerifyEmail } from './api/verify-email';
+import { ApiPayloadRegisterWithEmail } from './api/payload/register';
+import { ApiQueryVerifyEmail } from './api/payload/verify-email';
 import { UserService } from './user.service';
 
 @ApiTags(ChatssyApiTags.DbUser)

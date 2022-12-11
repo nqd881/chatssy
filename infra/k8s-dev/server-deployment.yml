@@ -18,6 +18,11 @@ spec:
           ports:
             - containerPort: 3000
           env:
+            - name: DOMAIN
+              valueFrom:
+                configMapKeyRef:
+                  name: env-configmap
+                  key: domain
             - name: SESSION_SECRET
               value: "4e511eeff9e8f4d5af2ebadf3ba443e624c384519992614cac941d2751a78184628971f8d82fe681279189976df964fa"
             - name: SESSION_MAX_AGE
@@ -41,4 +46,4 @@ spec:
             - name: GOOGLE_MAILER_REFRESH_TOKEN
               value: "1//04i2wszFiJ2XdCgYIARAAGAQSNwF-L9Ir0ugCe8_yoL0IOdsH0Wo0Cvalqzpax8NNkKk_5wQ3FmwNiLcTKVt7qiJgzhkYovCo3Rs"
             - name: MESSAGE_BUCKET_MAX_COUNT
-              value: "3"
+              value: "25"
