@@ -1,11 +1,48 @@
 <html>
   <head>
     <style>
-      .text { color: red }
+      * { padding: 0; border: 0; margin: 0; box-sizing: content-box; } body {
+      height: 100vh; width: 100vw; font-size: 16px; } .main { margin: 0 auto;
+      width: 50%; height: 100%; display: flex; flex-direction: column;
+      justify-content: flex-start; align-items: center; padding: 1rem; color:
+      red; } .default-input { display: none; } .btn-submit { padding: 0.8rem
+      1.4rem; border-radius: 0.25rem; color: #fff; font-weight: bold;
+      background-color: #22c813; }
     </style>
   </head>
   <body>
-    <div class="text">Continue signing up for Chatssy by click the link below:</div>
-    <a href={{url}}>{{url}}</a>
+    <div class="main">
+      <h3>Continue signing up for Chatssy by click the button below:</h3>
+      <form
+        action="http://localhost:3000/auth2/registrations/{{registrationId}}/activate"
+        method="post"
+      >
+        <input
+          class="default-input"
+          type="text"
+          name="code"
+          value={{code}}
+          readonly
+        />
+        <input
+          class="default-input"
+          type="text"
+          name="redirectUrlOnSuccess"
+          value={{redirectUrlOnSuccess}}
+          readonly
+        />
+        <input
+          class="default-input"
+          type="text"
+          name="redirectUrlOnFailure"
+          value={{redirectUrlOnFailure}}
+          readonly
+        />
+
+        <button class="btn-submit" type="submit">
+          Click here to activate your account
+        </button>
+      </form>
+    </div>
   </body>
 </html>

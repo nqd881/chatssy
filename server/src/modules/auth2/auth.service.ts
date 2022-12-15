@@ -82,7 +82,13 @@ export class AuthService {
       to: emailAddress,
       subject: 'Continue signing up',
       template: 'registration',
-      context: { url: uri },
+      // context: { url: uri },
+      context: {
+        registrationId,
+        code,
+        redirectUrlOnSuccess,
+        redirectUrlOnFailure,
+      },
     });
   }
 

@@ -38,7 +38,9 @@ function bootstrapSwagger(app: INestApplication) {
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  app.enableCors();
+  app.enableCors({
+    origin: true,
+  });
 
   app.useStaticAssets(join(__dirname, '..', 'public'));
 
