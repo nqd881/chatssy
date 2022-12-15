@@ -7,8 +7,10 @@ import {
   VERSION_NEUTRAL,
 } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
+import { join } from 'path';
 import { autoDeclare } from './types/declare';
 
 autoDeclare();
@@ -35,8 +37,10 @@ function bootstrapSwagger(app: INestApplication) {
 }
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.enableCors();
+
+  app.useStaticAssets(join(__dirname, '..', 'public'));
 
   bootstrapSwagger(app);
 
@@ -51,4 +55,5 @@ async function bootstrap() {
 
   await app.listen(3000);
 }
+
 bootstrap();

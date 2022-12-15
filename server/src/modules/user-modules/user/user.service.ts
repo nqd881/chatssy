@@ -112,7 +112,7 @@ export class UserService {
 
     const userData = await this.createUser(data);
 
-    const token = await this.tokenService.create('10m');
+    const token = await this.tokenService.create('VerifyEmailToken', '10m');
     this.sendVerifyMainEmail(
       userData.auth.mainEmail.emailAddress,
       userData.auth.userId.toString(),
@@ -123,7 +123,7 @@ export class UserService {
   }
 
   async verifyMainEmail(userId: string, code: string) {
-    const token = await this.tokenService.verify(code);
+    const token = await this.tokenService.verify('VerifyEmailToken', code);
 
     if (token) {
       await this.userAuthModel.findOneAndUpdate(

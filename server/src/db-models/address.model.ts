@@ -7,6 +7,7 @@ import {
 
 @modelOptions({
   schemaOptions: {
+    _id: false,
     versionKey: false,
   },
 })

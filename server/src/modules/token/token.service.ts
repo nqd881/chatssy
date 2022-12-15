@@ -8,24 +8,26 @@ import { InjectModel } from 'nestgoose';
 export class TokenService {
   constructor(@InjectModel(DbToken) private tokenModel: DbTokenModel) {}
 
-  findToken(code: string) {
-    return this.tokenModel.findOne({ code });
+  findToken(name: string, code: string) {
+    return this.tokenModel.findOne({ name, code });
   }
 
-  create(time: string | number) {
+  create(name: string, time: string | number) {
     const code = crypto.randomBytes(64).toString('hex');
 
     return this.tokenModel.create({
+      name,
       code,
       expiredAt: Date.now() + parseTimeMs(time),
     });
   }
 
-  async verify(code: string) {
-    const token = await this.findToken(code);
+  async verify(name: string, code: string) {
+    const token = await this.findToken(name, code);
     if (!token) return false;
 
-    const valid = token.isValid();
+    // const valid = token.isValid();
+    const valid = false;
     if (valid) token.delete();
 
     return valid;

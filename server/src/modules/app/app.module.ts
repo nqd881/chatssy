@@ -1,3 +1,4 @@
+import { Auth2Module } from '@modules/auth2/auth.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import {
@@ -9,7 +10,7 @@ import {
   NestModule,
 } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { isInProd, parseTimeMs } from '@utils';
+import { getEnvFilePath, isInDev, isInProd, parseTimeMs } from '@utils';
 import { Cache } from 'cache-manager';
 import RedisCacheStoreFactory from 'cache-manager-ioredis';
 import RedisSessionStore from 'connect-redis';
@@ -32,7 +33,7 @@ type RedisCacheStore = ReturnType<typeof RedisCacheStoreFactory['create']>;
 
 const modulesImported = [
   ConfigModule.forRoot({
-    // envFilePath: isInDev() ? getEnvFilePath() : undefined,
+    envFilePath: isInDev() ? getEnvFilePath() : undefined,
     isGlobal: true,
     validate,
   }),
@@ -72,7 +73,7 @@ const modulesImported = [
           from: 'Chatssy',
         },
         template: {
-          dir: `${process.cwd()}/src/templates`,
+          dir: `${process.cwd()}/src/templates/mail`,
           adapter: new HandlebarsAdapter(),
           options: {
             strict: true,
@@ -81,12 +82,13 @@ const modulesImported = [
       };
     },
   }),
-  UserModule,
-  AuthModule,
-  ChatModule,
-  TfaModule,
-  SessionModule,
-  MessageModule,
+  // UserModule,
+  // // AuthModule,
+  // ChatModule,
+  // TfaModule,
+  // SessionModule,
+  // MessageModule,
+  Auth2Module,
 ];
 
 @Module({

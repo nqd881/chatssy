@@ -298,3 +298,7 @@ export const serializeObjectIdValue = (obj: PlainLiteralObject) => {
 
 // export const testObjectIdValueSerializer =
 //   new ObjectIdValueSerializerConstructor();
+
+export const saveDocs = async (...docs: Document[]) => {
+  return Promise.all(docs.map((doc) => doc.save()));
+};

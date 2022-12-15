@@ -101,14 +101,17 @@ export class UserAuthService {
 
     if (!userAuth) return;
 
-    const token = await this.tokenService.create('1h');
+    const token = await this.tokenService.create('ForgotPasswordToken', '1h');
     this.sendResetPasswordEmail(userAuth.mainEmail.emailAddress, token.code);
 
     return true;
   }
 
   async resetPassword(userId: string, code: string, password: string) {
-    const tokenValid = await this.tokenService.verify(code);
+    const tokenValid = await this.tokenService.verify(
+      'ForgotPasswordToken',
+      code,
+    );
 
     if (!tokenValid) return null;
     return this.updateAuth(userId, { credentials: { password } });

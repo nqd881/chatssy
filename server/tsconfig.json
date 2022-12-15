@@ -19,8 +19,8 @@
     "noFallthroughCasesInSwitch": false,
     "esModuleInterop": true,
     "paths": {
-      "@pipes/*": ["src/pipes/*"],
       "@pipes": ["src/pipes/index"],
+      "@pipes/*": ["src/pipes/*"],
       "@interceptors": ["src/interceptors/index"],
       "@interceptors/*": ["src/interceptors/*"],
       "@middlewares": ["src/middlewares/index"],
@@ -29,11 +29,12 @@
       "@guards/*": ["src/guards/*"],
       "@utils": ["src/utils/index"],
       "@utils/*": ["src/utils/*"],
+      "@constant": ["src/constant/index"],
+      "@constant/*": ["src/constant/*"],
       "@templates/*": ["src/templates/*"],
       "@decorators/*": ["src/decorators/*"],
       "@dbmodels/*": ["src/db-models/*"],
       "@modules/*": ["src/modules/*"],
-      "@constant/*": ["src/constant/*"],
       "@types": ["src/types/index"]
     }
   },

@@ -60,8 +60,14 @@ export class DbUserAccountSecurity {
   @prop({ default: false })
   tfaEnabled: boolean;
 
-  @prop({}, PropType.ARRAY)
+  @prop({ type: [String] }, PropType.ARRAY)
   tfaRecoveryCodes: string[];
+}
+
+export enum DbUserAccountTypes {
+  FREE = 'free',
+  VIP = 'vip',
+  SVIP = 'svip',
 }
 
 @modelOptions({
@@ -88,7 +94,10 @@ export class DbUserAccount {
   @prop({ default: applyDefault })
   security: DbUserAccountSecurity;
 
-  @prop({ require: true, default: false })
+  @prop({ required: true })
+  type: DbUserAccountTypes;
+
+  @prop({ require: true })
   isActivated: boolean;
 }
 

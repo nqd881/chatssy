@@ -2,15 +2,14 @@ import {
   DocumentType,
   modelOptions,
   prop,
-  Ref,
   ReturnModelType,
 } from '@typegoose/typegoose';
-import { DbUser } from './user/user.model';
+import { Types } from 'mongoose';
 
 @modelOptions({})
 export class DbFile {
-  @prop({ ref: () => DbUser, required: true })
-  ownerId: Ref<DbUser>;
+  @prop({ required: true })
+  ownerId: Types.ObjectId;
 
   @prop({ required: true })
   size: number;
